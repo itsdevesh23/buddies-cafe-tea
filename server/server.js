@@ -38,6 +38,14 @@ const app = express();
 // SECURITY MIDDLEWARE
 // ==========================================
 
+// Fix double slashes in URL (in case VITE_API_URL has a trailing slash)
+app.use((req, res, next) => {
+  if (req.url.includes('//')) {
+    req.url = req.url.replace(/\/+/g, '/');
+  }
+  next();
+});
+
 // 1. CORS - Locked down to specific domains (Rule #32)
 const allowedOrigins = [
   'http://localhost:5173', // Local Vite Dev

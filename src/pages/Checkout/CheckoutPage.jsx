@@ -207,11 +207,16 @@ const CheckoutPage = () => {
       });
 
       if (!result.ok) {
-        toast.error('Server error. Are you sure the backend is running on port 5000?');
+        try {
+          const errData = await result.json();
+          toast.error(errData.error || 'Server error occurred.');
+        } catch(e) {
+          toast.error('Server error. Could not connect to backend.');
+        }
         setIsProcessing(false);
         return;
       }
-
+      
       const orderData = await result.json();
 
       // 3. Open Razorpay Checkout

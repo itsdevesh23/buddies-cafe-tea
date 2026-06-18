@@ -1,0 +1,3 @@
+const { Client } = require('pg');
+const client = new Client({ connectionString: process.env.VITE_SUPABASE_URL ? 'postgresql://postgres.ncknmbchjxzkyozowf:devesh%40123@aws-0-ap-south-1.pooler.supabase.com:5432/postgres' : 'postgresql://postgres.ncknmbchjxzkyozowf:devesh%40123@aws-0-ap-south-1.pooler.supabase.com:5432/postgres' });
+client.connect().then(() => client.query("SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name IN ('orders', 'profiles', 'coupons');")).then(res => { console.log(JSON.stringify(res.rows, null, 2)); client.end(); }).catch(console.error);

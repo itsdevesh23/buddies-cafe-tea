@@ -1,0 +1,187 @@
+.kombucha {
+  position: relative;
+  padding: 120px 24px;
+  background: var(--color-bg-light, #122418);
+  overflow: hidden;
+}
+
+.kombucha__glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.kombucha__glow--left {
+  top: -100px;
+  left: -200px;
+  background: radial-gradient(circle, #7C9A5E, transparent 70%);
+}
+
+.kombucha__glow--right {
+  bottom: -100px;
+  right: -200px;
+  background: radial-gradient(circle, #8BC34A, transparent 70%);
+}
+
+.kombucha__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+/* ── Content Column ── */
+.kombucha__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #8BC34A;
+  margin-bottom: 20px;
+}
+
+.kombucha__heading {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-cream, #F5F5DC);
+  line-height: 1.1;
+  margin: 0 0 24px 0;
+}
+
+.kombucha__body {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--color-text-muted, #A0AFA6);
+  margin: 0 0 32px 0;
+  max-width: 480px;
+}
+
+/* ── Flavor Pills ── */
+.kombucha__flavors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.kombucha__pill {
+  display: inline-block;
+  padding: 7px 18px;
+  border-radius: 50px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  border: 1px solid;
+  background: transparent;
+  cursor: default;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+/* ── CTA ── */
+.kombucha__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 36px;
+  border-radius: 50px;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(135deg, #7C9A5E, #5a7a3a);
+  color: var(--color-text-cream, #F5F5DC);
+  border: none;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.kombucha__cta:hover {
+  box-shadow: 0 0 30px rgba(124, 154, 94, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ── Image Column ── */
+.kombucha__image-col {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.kombucha__image-glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 195, 74, 0.15), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.kombucha__image {
+  position: relative;
+  max-width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.4));
+  z-index: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .kombucha__container {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    text-align: center;
+  }
+
+  .kombucha__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .kombucha__body {
+    max-width: 560px;
+  }
+
+  .kombucha__flavors {
+    justify-content: center;
+  }
+
+  .kombucha__image-col {
+    order: -1;
+  }
+
+  .kombucha__image {
+    max-height: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .kombucha {
+    padding: 80px 20px;
+  }
+
+  .kombucha__heading {
+    font-size: 2rem;
+  }
+
+  .kombucha__image {
+    max-height: 300px;
+  }
+}

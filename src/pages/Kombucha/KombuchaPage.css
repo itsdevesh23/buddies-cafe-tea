@@ -1,0 +1,141 @@
+.kombucha-page {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-cream);
+  min-height: 100vh;
+}
+
+.kombucha-hero {
+  height: 50vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(rgba(10, 26, 18, 0.6), var(--color-bg-dark)), url('../../assets/kombucha_lineup.png') center/cover;
+}
+
+.kombucha-hero__title {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  color: var(--color-text-cream);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.kombucha-hero__subtitle {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  color: var(--color-accent-matcha);
+  font-style: italic;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.kombucha-products {
+  padding: 4rem 0;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  padding: 2rem;
+  text-align: center;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-card__image-placeholder {
+  width: 150px;
+  height: 200px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.product-card__img {
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.product-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.product-card__price {
+  color: var(--color-accent-matcha);
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.product-card__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+  padding: 0.8rem 1.5rem;
+}
+
+.kombucha-benefits {
+  padding: 5rem 0;
+  background-color: var(--color-bg-light);
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.benefit-card {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.benefit-icon {
+  width: 48px;
+  height: 48px;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1rem;
+}
+
+.benefit-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.benefit-card p {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  line-height: 1.6;
+}

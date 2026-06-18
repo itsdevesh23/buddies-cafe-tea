@@ -1,0 +1,190 @@
+.heritage-page {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-cream);
+  min-height: 100vh;
+}
+
+.heritage-hero {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(10, 26, 18, 0.3), var(--color-bg-dark)), url('../../assets/matcha_hero.png') center/cover;
+}
+
+.heritage-hero__title {
+  font-family: var(--font-heading);
+  font-size: 4.5rem;
+  color: var(--color-text-cream);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.heritage-hero__subtitle {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  color: var(--color-accent-matcha);
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.terroir-section {
+  padding: 4rem 0;
+  margin-top: -3rem;
+  position: relative;
+  z-index: 10;
+}
+
+.terroir-content {
+  padding: 4rem;
+  border-radius: 16px;
+  text-align: center;
+}
+
+.terroir-content p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: var(--color-text-muted);
+}
+
+.timeline-section {
+  padding: 6rem 0;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-moss);
+}
+
+.timeline-item {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  position: relative;
+}
+
+.timeline-icon {
+  width: 50px;
+  height: 50px;
+  background: var(--color-bg-dark);
+  border: 2px solid var(--color-accent-matcha);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-matcha);
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.timeline-content {
+  padding: 2rem;
+  border-radius: 12px;
+  flex-grow: 1;
+}
+
+.timeline-content h3 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.timeline-content p {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.ethics-section {
+  padding: 5rem 0;
+  background-color: var(--color-bg-light);
+}
+
+.ethics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.ethics-card {
+  padding: 3rem;
+  text-align: center;
+  border-radius: 16px;
+}
+
+.ethics-icon {
+  color: var(--color-accent-matcha);
+  margin-bottom: 1.5rem;
+}
+
+.ethics-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+
+.ethics-card p {
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .timeline::before {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .timeline-item {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .timeline-item:nth-child(odd) {
+    flex-direction: row-reverse;
+  }
+  
+  .timeline-icon {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .timeline-item:nth-child(odd) .timeline-content {
+    text-align: right;
+  }
+  
+  .timeline-content {
+    width: calc(50% - 40px);
+  }
+}

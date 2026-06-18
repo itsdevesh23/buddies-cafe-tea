@@ -1,0 +1,175 @@
+/* ========================================
+   Heritage — Mountain-to-Cup Journey
+======================================== */
+
+.heritage {
+  position: relative;
+  padding: 8rem 2rem;
+  background: var(--color-bg-dark);
+  overflow: hidden;
+}
+
+/* Subtle mountain gradient */
+.heritage__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% 100%,
+      rgba(74, 93, 35, 0.12) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(18, 36, 24, 0.4) 100%
+    );
+  pointer-events: none;
+}
+
+.heritage__container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heritage__label {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1.5rem;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid rgba(124, 154, 94, 0.3);
+  border-radius: 50px;
+}
+
+.heritage__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  color: var(--color-text-cream);
+  margin-bottom: 5rem;
+  line-height: 1.1;
+}
+
+/* Timeline */
+.heritage__timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+/* Connecting Line */
+.heritage__line {
+  position: absolute;
+  top: 62px;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(124, 154, 94, 0.4) 15%,
+    rgba(124, 154, 94, 0.4) 85%,
+    transparent
+  );
+}
+
+/* Step */
+.heritage__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.heritage__step-num {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.heritage__step-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(124, 154, 94, 0.12);
+  border: 1px solid rgba(124, 154, 94, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.heritage__step-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--color-text-cream);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.heritage__step-desc {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  max-width: 240px;
+}
+
+/* ========== Responsive ========== */
+
+@media (max-width: 900px) {
+  .heritage__timeline {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem 2rem;
+  }
+  .heritage__line {
+    display: none;
+  }
+  .heritage__heading {
+    margin-bottom: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .heritage {
+    padding: 5rem 1.5rem;
+  }
+  .heritage__timeline {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  .heritage__step {
+    padding-left: 4.5rem;
+    text-align: left;
+    align-items: flex-start;
+  }
+  .heritage__step-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 48px;
+    height: 48px;
+  }
+  .heritage__step-num {
+    margin-bottom: 0.5rem;
+  }
+}

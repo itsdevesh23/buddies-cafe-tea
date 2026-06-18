@@ -1,0 +1,217 @@
+/* ========================================
+   FeaturedTeas — Featured Product Showcase
+======================================== */
+
+.featured-teas {
+  position: relative;
+  padding: 8rem 2rem;
+  background: var(--color-bg-dark);
+  overflow: hidden;
+}
+
+.featured-teas__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.featured-teas__label {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1.5rem;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid rgba(124, 154, 94, 0.3);
+  border-radius: 50px;
+}
+
+.featured-teas__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  color: var(--color-text-cream);
+  margin-bottom: 4rem;
+  line-height: 1.1;
+}
+
+/* Grid */
+.featured-teas__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 3.5rem;
+}
+
+/* Card */
+.featured-teas__card {
+  position: relative;
+  border-radius: 16px;
+  padding: 2.5rem 1.75rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.featured-teas__card:hover {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(124, 154, 94, 0.08);
+}
+
+/* Accent Stripe */
+.featured-teas__card-stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+/* Emoji Icon */
+.featured-teas__card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Category Tag */
+.featured-teas__card-category {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--color-accent-matcha);
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.8rem;
+  border: 1px solid rgba(124, 154, 94, 0.2);
+  border-radius: 50px;
+}
+
+/* Name */
+.featured-teas__card-name {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  color: var(--color-text-cream);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+/* Description */
+.featured-teas__card-desc {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  margin-bottom: 1.5rem;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Footer */
+.featured-teas__card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(245, 245, 220, 0.06);
+}
+
+.featured-teas__card-price {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: var(--color-text-cream);
+  letter-spacing: 0.04em;
+}
+
+.featured-teas__card-add {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  background: var(--color-moss);
+  color: var(--color-text-cream);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(124, 154, 94, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.featured-teas__card-add:hover {
+  background: var(--color-accent-matcha);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(124, 154, 94, 0.3);
+}
+
+/* View All Link */
+.featured-teas__bottom {
+  display: flex;
+  justify-content: center;
+}
+
+.featured-teas__view-all {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-accent-matcha);
+  letter-spacing: 0.08em;
+  padding: 0.75rem 2rem;
+  border: 1px solid rgba(124, 154, 94, 0.3);
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.featured-teas__view-all:hover {
+  background: rgba(124, 154, 94, 0.1);
+  border-color: rgba(124, 154, 94, 0.6);
+  box-shadow: 0 0 20px rgba(124, 154, 94, 0.15);
+}
+
+/* ========== Responsive ========== */
+
+@media (max-width: 900px) {
+  .featured-teas__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-teas {
+    padding: 5rem 1.5rem;
+  }
+  .featured-teas__grid {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 1rem;
+  }
+  .featured-teas__card {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+}

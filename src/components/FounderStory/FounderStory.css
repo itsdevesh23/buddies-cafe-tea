@@ -1,0 +1,163 @@
+/* ========================================
+   FounderStory — Documentary Founder Section
+======================================== */
+
+.founder {
+  position: relative;
+  padding: 8rem 2rem;
+  background: var(--color-bg-light);
+  overflow: hidden;
+}
+
+.founder__grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+/* Image Column */
+.founder__image-col {
+  position: relative;
+}
+
+.founder__image-frame {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.founder__image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.founder__image-border {
+  position: absolute;
+  inset: -8px;
+  border-radius: 20px;
+  border: 1px solid rgba(124, 154, 94, 0.25);
+  pointer-events: none;
+}
+
+/* Text Column */
+.founder__text-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.founder__label {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1.25rem;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid rgba(124, 154, 94, 0.3);
+  border-radius: 50px;
+  align-self: flex-start;
+}
+
+.founder__heading {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
+.founder__heading-name {
+  background: linear-gradient(
+    135deg,
+    var(--color-text-cream),
+    var(--color-accent-matcha)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.founder__subheading {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-text-muted);
+  text-transform: none;
+  letter-spacing: 0.02em;
+  margin-bottom: 2rem;
+}
+
+.founder__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 2.5rem;
+}
+
+.founder__body p {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--color-text-muted);
+}
+
+/* Quote */
+.founder__quote {
+  position: relative;
+  padding: 1.5rem 0 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid var(--color-accent-matcha);
+}
+
+.founder__quote p {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--color-text-cream);
+  opacity: 0.9;
+}
+
+/* Signature */
+.founder__signature {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--color-accent-matcha);
+  letter-spacing: 0.05em;
+}
+
+/* ========== Responsive ========== */
+
+@media (max-width: 900px) {
+  .founder__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .founder__image-frame {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .founder__image {
+    aspect-ratio: 3 / 4;
+  }
+}
+
+@media (max-width: 768px) {
+  .founder {
+    padding: 5rem 1.5rem;
+  }
+  .founder__quote {
+    padding-left: 1.25rem;
+  }
+  .founder__body p {
+    font-size: 0.95rem;
+  }
+}

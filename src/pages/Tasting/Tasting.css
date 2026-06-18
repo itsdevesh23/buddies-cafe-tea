@@ -1,0 +1,166 @@
+.tasting-page {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-cream);
+  min-height: 100vh;
+}
+
+.tasting-hero {
+  height: 60vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(rgba(10, 26, 18, 0.7), rgba(10, 26, 18, 0.9)), url('../../assets/tea_ceremony.png') center/cover;
+}
+
+.tasting-hero__title {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  color: var(--color-text-cream);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.tasting-hero__subtitle {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  color: var(--color-accent-matcha);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.tasting-details {
+  padding: 5rem 0;
+}
+
+.tasting-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+}
+
+.tasting-card {
+  padding: 2rem;
+  text-align: center;
+  border-radius: 12px;
+}
+
+.tasting-card__icon {
+  width: 40px;
+  height: 40px;
+  color: var(--color-accent-matcha);
+  margin-bottom: 1rem;
+}
+
+.tasting-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.tasting-card p {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.tasting-journey {
+  padding: 5rem 0;
+  background-color: var(--color-bg-light);
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+}
+
+.journey-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.journey-step {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--color-bg-dark);
+  padding: 1.5rem 2rem;
+  border-radius: 50px;
+  width: 100%;
+  max-width: 600px;
+  border: 1px solid var(--color-moss);
+}
+
+.journey-step__number {
+  background: var(--color-accent-matcha);
+  color: var(--color-bg-dark);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+}
+
+.journey-step__title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  flex-grow: 1;
+}
+
+.journey-step__arrow {
+  color: var(--color-accent-matcha);
+}
+
+.tasting-cta {
+  padding: 5rem 0;
+}
+
+.cta-box {
+  text-align: center;
+  padding: 4rem 2rem;
+  border-radius: 16px;
+}
+
+.cta-box h2 {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.cta-box p {
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+@media (min-width: 768px) {
+  .journey-steps {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .journey-step {
+    flex-direction: column;
+    text-align: center;
+    border-radius: 16px;
+    padding: 2rem;
+  }
+  .journey-step__arrow {
+    display: none;
+  }
+}

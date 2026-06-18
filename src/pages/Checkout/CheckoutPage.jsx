@@ -221,7 +221,7 @@ const CheckoutPage = () => {
 
       // 3. Open Razorpay Checkout
       const options = {
-        key: settings?.razorpay_key_id || 'rzp_test_5k6A0pI5V1O7v5', 
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || settings?.razorpay_key_id || 'rzp_test_5k6A0pI5V1O7v5', 
         amount: Math.round(orderData.amount * 100),
         currency: 'INR',
         name: 'Buddies Cafe',

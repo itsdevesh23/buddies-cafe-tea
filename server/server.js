@@ -176,7 +176,12 @@ app.post('/api/create-order', zone1Limiter, async (req, res) => {
     // 1. Fetch real prices from Sanity
     let calculatedSubtotal = 0;
     for (const item of items) {
-      const realId = item.originalId || item.id;
+      let realId = item.originalId || item.id;
+      // Fallback for old cart items without originalId (e.g. id: 'product-uuid-100')
+      if (!item.originalId && realId.match(/-\d+$/)) {
+        realId = realId.replace(/-\d+$/, '');
+      }
+      
       const sanityProduct = await sanityClient.fetch(`*[_type == "product" && _id == $id][0] { price, moq }`, { id: realId });
       if (!sanityProduct) {
         return res.status(400).json({ error: `Product ${item.name} not found in database.` });

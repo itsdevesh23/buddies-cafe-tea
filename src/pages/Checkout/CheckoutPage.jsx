@@ -360,6 +360,7 @@ const CheckoutPage = () => {
                     <div className="form-group">
                       <label>State</label>
                       <select value={stateLoc} onChange={e => setStateLoc(e.target.value)}>
+                        <option value="" disabled>Select State</option>
                         <option value="Andhra Pradesh">Andhra Pradesh</option>
                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                         <option value="Assam">Assam</option>

@@ -19,30 +19,6 @@ const fetchWithAuth = async (url, options = {}) => {
   return fetch(url, { ...options, headers });
 };
 
-const DebugProfileLoader = ({ userId }) => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-  
-  useEffect(() => {
-    if (userId) {
-      supabase.from('profiles').select('*').eq('id', userId).single()
-        .then(res => {
-          setData(res.data);
-          setError(res.error);
-        })
-        .catch(err => setError(err));
-    }
-  }, [userId]);
-
-  return (
-    <div style={{ marginTop: '10px', padding: '5px', border: '1px solid #333' }}>
-      <strong>Profile Query Result:</strong><br/>
-      Data: {JSON.stringify(data)}<br/>
-      Error: {JSON.stringify(error)}
-    </div>
-  );
-};
-
 const AdminDashboard = () => {
   const { user, login, logout, isAdmin, loading } = useAuth() || { user: null, login: () => {}, logout: () => {}, isAdmin: false, loading: false };
   const navigate = useNavigate();
@@ -534,13 +510,6 @@ const AdminDashboard = () => {
           <ShieldAlert size={64} color="#ef4444" style={{ marginBottom: '1rem' }} />
           <h1>Unauthorized Access</h1>
           <p>The account ({user.email}) does not have administrative privileges.</p>
-          <div style={{ marginTop: '2rem', padding: '1rem', background: '#000', color: '#0f0', textAlign: 'left', fontSize: '12px', overflowWrap: 'break-word' }}>
-            <strong>Debug Info:</strong><br/>
-            User ID: {user?.id}<br/>
-            isAdmin flag: {String(isAdmin)}<br/>
-            Loading flag: {String(loading)}<br/>
-            <DebugProfileLoader userId={user?.id} />
-          </div>
           <button className="admin-btn" style={{ marginTop: '2rem' }} onClick={() => navigate('/')}>Return to Homepage</button>
         </div>
       </div>

@@ -10,30 +10,59 @@
 }
 
 .chat-toggle-btn {
-  width: 60px;
   height: 60px;
-  border-radius: 50%;
-  background: var(--primary);
+  padding: 0 1.5rem;
+  border-radius: 30px;
+  background: linear-gradient(135deg, var(--primary) 0%, #D4AF37 100%);
   color: var(--dark);
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.3s ease;
+  gap: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 15px rgba(212, 175, 55, 0.4);
+  transition: all 0.3s ease;
   z-index: 1001;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
 .chat-toggle-btn:hover {
-  background: #E5CE9F;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 175, 55, 0.6);
+  background: linear-gradient(135deg, #E5CE9F 0%, #D4AF37 100%);
 }
 
 .chat-toggle-btn.open {
+  width: 60px;
+  padding: 0;
   background: rgba(255, 255, 255, 0.1);
   color: var(--light);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
+  box-shadow: none;
+}
+
+.ai-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+.sparkle-icon {
+  color: #fff;
+  animation: pulse 2s infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-2px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.5; transform: scale(0.8); }
 }
 
 .chat-window {

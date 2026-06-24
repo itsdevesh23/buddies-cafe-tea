@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, User, Bot, Loader2 } from 'lucide-react';
+import { MessageSquare, X, Send, User, Bot, Loader2, Sparkles } from 'lucide-react';
 import './ChatWidget.css';
 
 // Simple UUID generator for the session
@@ -158,7 +158,15 @@ const ChatWidget = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
+        {isOpen ? (
+          <X size={24} />
+        ) : (
+          <>
+            <Bot size={24} className="ai-icon" />
+            <span className="ai-text">Ask AI</span>
+            <Sparkles size={16} className="sparkle-icon" />
+          </>
+        )}
       </motion.button>
     </div>
   );

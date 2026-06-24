@@ -71,6 +71,21 @@ const AccountPage = () => {
 
     try {
       if (issueImage) {
+        // File Validation
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!validTypes.includes(issueImage.type)) {
+          toast.error('Only image files (JPEG, PNG, WEBP, GIF) are allowed.');
+          setIsLoading(false);
+          return;
+        }
+        
+        const maxSize = 5 * 1024 * 1024; // 5MB
+        if (issueImage.size > maxSize) {
+          toast.error('Image size must be less than 5MB.');
+          setIsLoading(false);
+          return;
+        }
+
         const fileExt = issueImage.name.split('.').pop();
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
         const { data, error } = await supabase.storage
@@ -82,12 +97,16 @@ const AccountPage = () => {
         imageUrl = publicUrlData.publicUrl;
       }
 
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/support-tickets', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': session ? `Bearer ${session.access_token}` : ''
+        },
         body: JSON.stringify({
           orderId: selectedOrderId,
-          userId: user.id,
           issueType,
           message: issueMessage,
           imageUrl
@@ -296,7 +315,7 @@ const AccountPage = () => {
               <div className="user-avatar">
                 <User size={32} />
               </div>
-              <h3>{user.name || 'Valued Guest'}</h3>
+              <h3>{user?.user_metadata?.full_name || 'Valued Guest'}</h3>
               <p>{user.email || 'guest@buddiescafe.com'}</p>
             </div>
             
@@ -338,7 +357,7 @@ const AccountPage = () => {
           
           <main className="dashboard-main glass-panel">
             <h2 className="dashboard-title">
-              {activeTab === 'profile' && `Welcome back, ${user.name || 'Valued Guest'}`}
+              {activeTab === 'profile' && `Welcome back, ${user?.user_metadata?.full_name || 'Valued Guest'}`}
               {activeTab === 'orders' && 'Your Order History'}
               {activeTab === 'wishlist' && 'Your Wishlist'}
               {activeTab === 'settings' && 'Account Settings'}

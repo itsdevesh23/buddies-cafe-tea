@@ -80,7 +80,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            BUDDIES
+            DANJO
           </motion.span>
           <motion.span
             className="hero__title-line hero__title-line--accent"
@@ -88,7 +88,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
-            CAFE TEA
+            TEAS
           </motion.span>
         </motion.h1>
 

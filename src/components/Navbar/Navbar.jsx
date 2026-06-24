@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Menu, X, Heart, User } from 'lucide-react';
 import { useWishlist } from '../../context/WishlistContext';
+import danjoLogo from '../../assets/DanjoTeasLogo.jpeg';
 import './Navbar.css';
 
 export default function Navbar({ cartCount, onCartClick, hasBanner }) {
@@ -39,7 +40,7 @@ export default function Navbar({ cartCount, onCartClick, hasBanner }) {
     >
       <div className="navbar__inner">
         <Link to="/" className="navbar__brand">
-          <span className="navbar__brand-text">Buddies Cafe</span>
+          <img src={danjoLogo} alt="Danjo Teas" style={{ height: '40px', width: 'auto', borderRadius: '4px' }} />
         </Link>
 
         <div className="navbar__links-pill">

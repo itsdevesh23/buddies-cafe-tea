@@ -62,7 +62,9 @@ const ContactPage = () => {
                 <MapPin className="contact__icon" />
                 <div>
                   <h3>Visit Us</h3>
-                  <p>Garden Road, Pudumund<br/>Ooty, Tamil Nadu</p>
+                  <a href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '4px'}}>Buddies Cafe, Pudumund</a>
+                  <a href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '4px'}}>Commercial Road, Ooty</a>
+                  <a href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block'}}>Coonoor Branch</a>
                 </div>
               </div>
 

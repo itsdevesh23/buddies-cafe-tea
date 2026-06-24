@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Globe, Mail, Phone, MapPin, ArrowRight, MessageCircle } from 'lucide-react';
+import { FaInstagram } from 'react-icons/fa';
+import danjoLogo from '../../assets/DanjoTeasLogo.jpeg';
 import { useSettings } from '../../context/SettingsContext';
 import './Footer.css';
 
@@ -51,7 +53,7 @@ const Footer = () => {
     <footer className="footer">
       {/* ── Top Brand Banner ── */}
       <div className="footer__top">
-        <h2 className="footer__brand-name">Buddies Cafe Tea Room</h2>
+        <h2 className="footer__brand-name">Danjo Teas</h2>
         <p className="footer__brand-tagline">
           South India's First Specialty Tea Room · Est. 2012
         </p>
@@ -89,20 +91,31 @@ const Footer = () => {
       <div className="footer__grid">
         {/* Column 1: Brand */}
         <div className="footer__col footer__col--brand">
-          <h3 className="footer__col-title">Buddies Cafe</h3>
+          <img src={danjoLogo} alt="Danjo Teas" style={{ height: '60px', width: 'auto', borderRadius: '4px', marginBottom: '1rem' }} />
           <p className="footer__brand-desc">
             A mountain sanctuary for tea lovers. Premium Nilgiris teas, artisanal
             kombucha, and a world-class café experience in Ooty.
           </p>
           <div className="footer__socials">
             <a
-              href="https://buddiescafe.com"
+              href="https://www.instagram.com/buddiescafetea?igsh=M3NqMno5dzJ1azF4"
               target="_blank"
               rel="noopener noreferrer"
               className="footer__social-link"
-              aria-label="Website"
+              aria-label="Buddies Cafe Instagram"
+              title="Buddies Cafe Instagram"
             >
-              <Globe size={18} />
+              <FaInstagram size={18} />
+            </a>
+            <a
+              href="https://www.instagram.com/danjoteas?igsh=MXFnc2g4NGNoZ29sZg=="
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer__social-link"
+              aria-label="Danjo Teas Instagram"
+              title="Danjo Teas Instagram"
+            >
+              <FaInstagram size={18} />
             </a>
             <a
               href={`mailto:${storeEmail}`}
@@ -118,12 +131,35 @@ const Footer = () => {
             >
               <Phone size={18} />
             </a>
+          </div>
+          <div className="footer__socials" style={{marginTop: '15px'}}>
             <a
-              href="https://maps.google.com/?q=Buddies+Cafe+Ooty"
+              href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39"
               target="_blank"
               rel="noopener noreferrer"
               className="footer__social-link"
-              aria-label="Location"
+              aria-label="Location Pudumund"
+              title="Buddies Cafe, Pudumund"
+            >
+              <MapPin size={18} />
+            </a>
+            <a
+              href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer__social-link"
+              aria-label="Location Commercial Road"
+              title="Commercial Road, Ooty"
+            >
+              <MapPin size={18} />
+            </a>
+            <a
+              href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer__social-link"
+              aria-label="Location Coonoor"
+              title="Coonoor Branch"
             >
               <MapPin size={18} />
             </a>
@@ -198,9 +234,9 @@ const Footer = () => {
 
       {/* ── Bottom Bar ── */}
       <div className="footer__bottom">
-        <span className="footer__copyright">
-          © 2025 Buddies Cafe Tea Room. All rights reserved.
-        </span>
+        <div className="footer__copy">
+          © {new Date().getFullYear()} Danjo Teas. All rights reserved.
+        </div>
         <div className="footer__legal">
           <Link to="/privacy" className="footer__legal-link">Privacy</Link>
           <Link to="/terms" className="footer__legal-link">Terms</Link>

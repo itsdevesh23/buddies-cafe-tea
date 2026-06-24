@@ -100,11 +100,19 @@ const CafePreview = () => {
           </div>
 
           <motion.div className="cafe__location" variants={fadeUp}>
-            <div className="cafe__location-row">
+            <a href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39" target="_blank" rel="noreferrer" className="cafe__location-row" style={{color: 'inherit', textDecoration: 'none'}}>
               <MapPin size={15} />
-              <span>Garden Road, Pudumund, Ooty</span>
-            </div>
-            <div className="cafe__location-row">
+              <span>Buddies Cafe, Pudumund, Ooty</span>
+            </a>
+            <a href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7" target="_blank" rel="noreferrer" className="cafe__location-row" style={{color: 'inherit', textDecoration: 'none'}}>
+              <MapPin size={15} />
+              <span>Commercial Road, Ooty</span>
+            </a>
+            <a href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7" target="_blank" rel="noreferrer" className="cafe__location-row" style={{color: 'inherit', textDecoration: 'none'}}>
+              <MapPin size={15} />
+              <span>Coonoor Branch</span>
+            </a>
+            <div className="cafe__location-row" style={{marginTop: '10px'}}>
               <Clock size={15} />
               <span>Open Daily 8:00 AM – 9:00 PM</span>
             </div>

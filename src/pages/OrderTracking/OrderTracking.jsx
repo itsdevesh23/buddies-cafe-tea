@@ -34,7 +34,13 @@ const OrderTracking = () => {
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/order/${idToSearch}`);
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/order/${idToSearch}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+        }
+      });
       const data = await response.json();
 
       if (!response.ok || !data) {

@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "build": "echo 'No build required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,6 +25,7 @@
     "helmet": "^8.2.0",
     "razorpay": "^2.9.6",
     "resend": "^6.12.4",
-    "xss-clean": "^0.1.4"
+    "xss-clean": "^0.1.4",
+    "zod": "^4.4.3"
   }
 }

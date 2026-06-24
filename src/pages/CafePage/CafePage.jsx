@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Wifi, BookOpen, BatteryCharging, Mountain, Coffee, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PageTransition from '../../components/PageTransition/PageTransition';
+import buddiesLogo from '../../assets/BuddiesLogo.jpg';
 import './CafePage.css';
 
 const CafePage = () => {
@@ -17,6 +18,7 @@ const CafePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
+            <img src={buddiesLogo} alt="Buddies Cafe" style={{ height: '100px', marginBottom: '1.5rem', borderRadius: '8px', objectFit: 'contain' }} />
             <h1 className="cafe-hero__title">The Buddies Cafe Experience</h1>
             <p className="cafe-hero__subtitle">Find us at Garden Road, Pudumund, Ooty</p>
           </motion.div>
@@ -87,7 +89,9 @@ const CafePage = () => {
             <div className="location-wrapper glass-panel">
               <div className="location-info">
                 <h2>Visit Us</h2>
-                <p><MapPin size={20} /> Garden Road, Pudumund, Ooty, Tamil Nadu 643001</p>
+                <a href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '8px'}}><MapPin size={20} style={{verticalAlign: 'middle', marginRight: '8px'}} /> Buddies Cafe, Pudumund</a>
+                <a href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '8px'}}><MapPin size={20} style={{verticalAlign: 'middle', marginRight: '8px'}} /> Commercial Road, Ooty</a>
+                <a href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '16px'}}><MapPin size={20} style={{verticalAlign: 'middle', marginRight: '8px'}} /> Coonoor Branch</a>
                 <p>Open Daily: 10:00 AM - 8:00 PM</p>
                 <Link to="/booking" className="btn-primary reserve-btn">
                   Reserve a Table

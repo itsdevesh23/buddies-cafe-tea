@@ -52,6 +52,23 @@ export default function Shop() {
       const bIsBrand = b.toUpperCase().startsWith('BRAND') || b.toUpperCase().startsWith('SMALL GROWERS') || b.toUpperCase().startsWith('SILVERMIST');
       if (aIsBrand && !bIsBrand) return 1;
       if (!aIsBrand && bIsBrand) return -1;
+      
+      const aUpper = a.toUpperCase();
+      const bUpper = b.toUpperCase();
+      
+      const getWeight = (cat) => {
+        if (cat === 'SPICES') return 2;
+        if (cat === 'COFFEE') return 1;
+        return 0;
+      };
+
+      const weightA = getWeight(aUpper);
+      const weightB = getWeight(bUpper);
+
+      if (weightA !== weightB) {
+        return weightA - weightB;
+      }
+
       return a.localeCompare(b);
     });
   }, [sanityProducts]);

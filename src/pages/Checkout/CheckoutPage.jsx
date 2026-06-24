@@ -133,9 +133,14 @@ const CheckoutPage = () => {
       try {
         // 1. Create the pending order
         const backendUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-order';
+        const { data: { session } } = await supabase.auth.getSession();
+        
         const result = await fetch(backendUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+          },
           body: JSON.stringify({ 
             items: displayCart, 
             couponCode: couponCode || null, 
@@ -194,9 +199,14 @@ const CheckoutPage = () => {
       // Gather Shipping Info from inputs (already declared above)
       // 2. Fetch order ID from our secure backend
       const backendUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-order';
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const result = await fetch(backendUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+        },
         body: JSON.stringify({ 
           items: displayCart, 
           couponCode: couponCode || null, 
@@ -221,7 +231,7 @@ const CheckoutPage = () => {
 
       // 3. Open Razorpay Checkout
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || settings?.razorpay_key_id || 'rzp_test_5k6A0pI5V1O7v5', 
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || settings?.razorpay_key_id, 
         amount: Math.round(orderData.amount * 100),
         currency: 'INR',
         name: 'Buddies Cafe',

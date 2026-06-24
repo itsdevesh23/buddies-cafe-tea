@@ -145,36 +145,46 @@ export default function ProductDetail() {
             <p className="pdp__desc">{product.description}</p>
 
             {/* Tasting & Aroma */}
-            <div className="pdp__meta-grid">
-              <div className="pdp__meta-item">
-                <Coffee size={16} />
-                <div>
-                  <span className="pdp__meta-label">Tasting Notes</span>
-                  <span className="pdp__meta-value">{product.tastingNotes}</span>
-                </div>
+            {(product.tastingNotes || product.aroma || product.brewTemp || product.steepTime) && (
+              <div className="pdp__meta-grid">
+                {product.tastingNotes && (
+                  <div className="pdp__meta-item">
+                    <Coffee size={16} />
+                    <div>
+                      <span className="pdp__meta-label">Tasting Notes</span>
+                      <span className="pdp__meta-value">{product.tastingNotes}</span>
+                    </div>
+                  </div>
+                )}
+                {product.aroma && (
+                  <div className="pdp__meta-item">
+                    <Leaf size={16} />
+                    <div>
+                      <span className="pdp__meta-label">Aroma</span>
+                      <span className="pdp__meta-value">{product.aroma}</span>
+                    </div>
+                  </div>
+                )}
+                {product.brewTemp && (
+                  <div className="pdp__meta-item">
+                    <Thermometer size={16} />
+                    <div>
+                      <span className="pdp__meta-label">Brew Temperature</span>
+                      <span className="pdp__meta-value">{product.brewTemp}</span>
+                    </div>
+                  </div>
+                )}
+                {product.steepTime && (
+                  <div className="pdp__meta-item">
+                    <Clock size={16} />
+                    <div>
+                      <span className="pdp__meta-label">Steep Time</span>
+                      <span className="pdp__meta-value">{product.steepTime}</span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="pdp__meta-item">
-                <Leaf size={16} />
-                <div>
-                  <span className="pdp__meta-label">Aroma</span>
-                  <span className="pdp__meta-value">{product.aroma}</span>
-                </div>
-              </div>
-              <div className="pdp__meta-item">
-                <Thermometer size={16} />
-                <div>
-                  <span className="pdp__meta-label">Brew Temperature</span>
-                  <span className="pdp__meta-value">{product.brewTemp}</span>
-                </div>
-              </div>
-              <div className="pdp__meta-item">
-                <Clock size={16} />
-                <div>
-                  <span className="pdp__meta-label">Steep Time</span>
-                  <span className="pdp__meta-value">{product.steepTime}</span>
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* Quantity */}
             <div className="pdp__origin glass-panel">

@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useSettings } from '../../context/SettingsContext';
 import PageTransition from '../../components/PageTransition/PageTransition';
+import BrewingGuide from '../../components/BrewingGuide/BrewingGuide';
 import { client, urlFor } from '../../sanity';
 import './ProductDetail.css';
 
@@ -276,6 +277,11 @@ export default function ProductDetail() {
             </div>
           </div>
         )}
+        
+        {/* Brewing Guide Injection */}
+        <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <BrewingGuide />
+        </div>
       </section>
     </PageTransition>
   );

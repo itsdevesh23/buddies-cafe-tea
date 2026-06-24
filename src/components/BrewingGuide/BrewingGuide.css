@@ -1,0 +1,115 @@
+.brewing-guide-container {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brewing-guide-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.brewing-guide-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #f8fafc;
+  margin-bottom: 1rem;
+}
+
+.brewing-guide-header p {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.brewing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.brewing-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.brewing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--theme-color);
+  opacity: 0.8;
+}
+
+.brewing-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.brewing-card__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brewing-card__icon {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.5rem;
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+}
+
+.brewing-card__header h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.brewing-card__stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+}
+
+.stat-row svg {
+  color: #64748b;
+}
+
+.stat-row--extra {
+  margin-top: 0.5rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .brewing-guide-container {
+    padding: 3rem 1rem;
+  }
+  
+  .brewing-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -27,6 +27,7 @@ const shopLinks = [
 const visitLinks = [
   { label: 'Café Experience', to: '/cafe' },
   { label: 'Contact', to: '/contact' },
+  { label: 'Brewing Guide', to: '/brewing-guide' },
   { label: 'Booking', to: '/booking' },
   { label: 'Journal', to: '/journal' },
   { label: 'FAQ', to: '/faq' },

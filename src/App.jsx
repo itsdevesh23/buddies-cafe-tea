@@ -22,6 +22,7 @@ import AccountPage from './pages/Account/AccountPage';
 import BookingPage from './pages/Booking/BookingPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import UpdatePassword from './pages/UpdatePassword/UpdatePassword';
+import BrewingGuidePage from './pages/BrewingGuidePage/BrewingGuidePage';
 
 import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
 import OrderTracking from './pages/OrderTracking/OrderTracking';
@@ -74,6 +75,7 @@ export default function App() {
                   <Route path="/order-confirmation/:id" element={<OrderConfirmation />} />
                   <Route path="/track-order" element={<OrderTracking />} />
                   <Route path="/tracking" element={<OrderTracking />} />
+                  <Route path="/brewing-guide" element={<BrewingGuidePage />} />
                 </Route>
                 
                 {/* Admin Route - No Layout Header/Footer */}

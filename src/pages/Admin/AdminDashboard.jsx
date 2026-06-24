@@ -7,8 +7,20 @@ import { supabase } from '../../lib/supabase';
 import { client } from '../../lib/sanity';
 import './AdminDashboard.css';
 
+const fetchWithAuth = async (url, options = {}) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+  if (session) {
+    headers['Authorization'] = `Bearer ${session.access_token}`;
+  }
+  return fetch(url, { ...options, headers });
+};
+
 const AdminDashboard = () => {
-  const { user, login, logout, isAdmin } = useAuth() || { user: null, login: () => {}, logout: () => {}, isAdmin: false };
+  const { user, login, logout, isAdmin, loading } = useAuth() || { user: null, login: () => {}, logout: () => {}, isAdmin: false, loading: false };
   const navigate = useNavigate();
   
   const [activeTab, setActiveTab] = useState('overview');
@@ -137,14 +149,14 @@ const AdminDashboard = () => {
       if (!ordersError) setOrders(ordersData || []);
 
       // Fetch Customers securely from backend
-      const customersRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/admin/customers');
+      const customersRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/admin/customers');
       if (customersRes.ok) {
         const customersData = await customersRes.json();
         setCustomers(customersData.users || []);
       }
 
       // Fetch Support Tickets
-      const supportRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/support-tickets');
+      const supportRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/support-tickets');
       if (supportRes.ok) {
         const supportData = await supportRes.json();
         setSupportTickets(supportData || []);
@@ -157,7 +169,7 @@ const AdminDashboard = () => {
       await fetchJournalPosts();
 
       // Fetch Bookings securely from backend (bypasses RLS)
-      const bookingsRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/get-bookings');
+      const bookingsRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/get-bookings');
       if (bookingsRes.ok) {
         const bookingsData = await bookingsRes.json();
         setBookings(bookingsData.bookings || []);
@@ -190,7 +202,7 @@ const AdminDashboard = () => {
 
   const handleSupportTicketUpdate = async (ticketId, newStatus) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/support-tickets/${ticketId}`, {
+      const res = await fetchWithAuth(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/support-tickets/${ticketId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -228,7 +240,7 @@ const AdminDashboard = () => {
 
   const updateBookingStatus = async (bookingId, newStatus) => {
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-booking-status', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-booking-status', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: bookingId, status: newStatus })
@@ -259,7 +271,7 @@ const AdminDashboard = () => {
     try {
       const parsedQty = Number(editStockQuantity);
       
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-product', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-product', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -296,7 +308,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     if (!newCouponCode) return;
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-coupon', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -330,7 +342,7 @@ const AdminDashboard = () => {
     if (!newJournalTitle || !newJournalSlug || !newJournalContent) return;
     setIsPublishingJournal(true);
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-journal-post', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-journal-post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -361,7 +373,7 @@ const AdminDashboard = () => {
 
   const handleUpdateJournalPost = async (id, updates) => {
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-journal-post', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-journal-post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, updates })
@@ -386,7 +398,7 @@ const AdminDashboard = () => {
 
   const handleToggleCoupon = async (id, currentStatus) => {
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/toggle-coupon', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/toggle-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, is_active: !currentStatus })
@@ -403,7 +415,7 @@ const AdminDashboard = () => {
   const handleDeleteCoupon = async (id) => {
     if (!window.confirm("Are you sure you want to permanently delete this coupon?")) return;
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/delete-coupon', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/delete-coupon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id })
@@ -421,7 +433,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     setIsSavingSettings(true);
     try {
-      const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-settings', {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)
@@ -449,6 +461,14 @@ const AdminDashboard = () => {
       setLoginError(result.message);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="unauthorized-view" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#0f172a' }}>
+        <h2 style={{ color: '#f8fafc' }}>Checking Administrative Privileges...</h2>
+      </div>
+    );
+  }
 
   if (!user) {
     return (

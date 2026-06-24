@@ -13,6 +13,7 @@ import rateLimit from 'express-rate-limit';
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
 import { generateCustomerReceipt, generateAdminAlert, generateBookingAlert, generateBookingConfirmedEmail, generateBookingCancelledEmail } from './emailTemplates.js';
+import { validate, registerSchema, contactSchema, bookingSchema, orderSchema } from './middleware/validate.js';
 
 // Load .env.local from the parent directory
 const __filename = fileURLToPath(import.meta.url);
@@ -106,6 +107,51 @@ const zone4Limiter = rateLimit({
   standardHeaders: true, legacyHeaders: false,
 });
 
+// --- STRICT ABUSE LIMITERS ---
+const authLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 3, // 3 requests per hour per IP
+  message: { error: 'Too many registration attempts from this IP, please try again after an hour' },
+  standardHeaders: true, legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    Sentry.captureMessage(`Auth Rate Limit Exceeded: ${req.ip}`, { level: 'warning', tags: { route: req.path } });
+    res.status(options.statusCode).json(options.message);
+  }
+});
+
+const contactFormLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // 5 requests per hour per IP
+  message: { error: 'Too many contact requests from this IP, please try again after an hour' },
+  standardHeaders: true, legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    Sentry.captureMessage(`Contact Form Rate Limit Exceeded: ${req.ip}`, { level: 'warning', tags: { route: req.path } });
+    res.status(options.statusCode).json(options.message);
+  }
+});
+
+const ticketLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10, // 10 requests per hour per IP
+  message: { error: 'Too many support tickets created from this IP, please try again after an hour' },
+  standardHeaders: true, legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    Sentry.captureMessage(`Support Ticket Rate Limit Exceeded: ${req.ip}`, { level: 'warning', tags: { route: req.path } });
+    res.status(options.statusCode).json(options.message);
+  }
+});
+
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // 10 chat requests per 15 mins per IP
+  message: { error: 'Too many AI chat requests. Please try again in 15 minutes.' },
+  standardHeaders: true, legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    Sentry.captureMessage(`AI Chat Rate Limit Exceeded: ${req.ip}`, { level: 'warning', tags: { route: req.path } });
+    res.status(options.statusCode).json(options.message);
+  }
+});
+
 // Apply generic browsing rate limiter as fallback
 app.use(zone3Limiter);
 
@@ -128,6 +174,78 @@ const supabaseAdmin = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 );
+
+// --- AUTHENTICATION MIDDLEWARES ---
+const requireAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Missing authorization header' });
+    }
+    
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ error: 'Missing bearer token' });
+    }
+
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+    
+    if (error || !user) {
+      return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+    
+    req.user = user;
+    next();
+  } catch (error) {
+    console.error('Auth Middleware Error:', error);
+    res.status(500).json({ error: 'Internal server error during authentication' });
+  }
+};
+
+const optionalAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+      if (token) {
+        const { data: { user } } = await supabaseAdmin.auth.getUser(token);
+        if (user) req.user = user;
+      }
+    }
+    next();
+  } catch (error) {
+    next(); // Optional, so just proceed if invalid token
+  }
+};
+
+const requireAdmin = async (req, res, next) => {
+  // First ensure they are authenticated
+  requireAuth(req, res, async () => {
+    try {
+      // Check if user has is_admin flag in profiles table
+      const { data: profile, error } = await supabaseAdmin
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', req.user.id)
+        .single();
+        
+      if (error || !profile || !profile.is_admin) {
+        Sentry.captureMessage('Unauthorized Admin Access Attempt', { 
+          level: 'warning', 
+          user: { id: req.user.id },
+          tags: { route: req.path }
+        });
+        console.warn(`User ${req.user.id} attempted to access admin route without admin privileges.`);
+        return res.status(403).json({ error: 'Forbidden: Admin access required' });
+      }
+      
+      next();
+    } catch (err) {
+      console.error('Admin Middleware Error:', err);
+      res.status(500).json({ error: 'Internal server error checking admin status' });
+    }
+  });
+};
 
 // --- MAINTENANCE MODE MIDDLEWARE (Rule #48) ---
 let cachedMaintenanceMode = false;
@@ -173,9 +291,12 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.post('/api/create-order', zone1Limiter, async (req, res) => {
+app.post('/api/create-order', zone1Limiter, optionalAuth, async (req, res) => {
   try {
-    const { items, couponCode, shippingInfo, userId } = req.body;
+    const { items, couponCode, shippingInfo } = req.body;
+    
+    // BOLA FIX: Never trust userId from client. If logged in, grab from token.
+    const finalUserId = req.user ? req.user.id : null;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'Cart is empty' });
@@ -247,7 +368,7 @@ app.post('/api/create-order', zone1Limiter, async (req, res) => {
     const supabaseOrderData = {
       id: orderId, // UUID primary key
       razorpay_order_id: order ? order.id : null,
-      user_id: userId || null,
+      user_id: finalUserId,
       items: items,
       total_amount: finalTotal,
       shipping_info: shippingInfo,
@@ -294,6 +415,7 @@ async function getShiprocketToken() {
     }
 
     const res = await fetch('https://apiv2.shiprocket.in/v1/external/auth/login', {
+      signal: AbortSignal.timeout(5000),
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -337,6 +459,7 @@ app.post('/api/shipping-rates', zone2Limiter, async (req, res) => {
     const apiUrl = `https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=${pickup_postcode}&delivery_postcode=${delivery_postcode}&weight=${weight}&cod=${cod}`;
 
     const response = await fetch(apiUrl, {
+      signal: AbortSignal.timeout(5000),
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -414,7 +537,7 @@ const generateShiprocketPayload = (orderData) => {
 };
 
 // Final Order Processing Endpoint (Zone 1)
-app.post('/api/place-order', zone1Limiter, async (req, res) => {
+app.post('/api/place-order', zone1Limiter, validate(orderSchema), async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, couponCode } = req.body;
 
@@ -512,7 +635,8 @@ app.post('/api/place-order', zone1Limiter, async (req, res) => {
     
     if (srToken) {
       const payload = generateShiprocketPayload(orderData);
-      const srReq = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/ad', {
+      const srReq = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
+        signal: AbortSignal.timeout(5000),
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -531,7 +655,7 @@ app.post('/api/place-order', zone1Limiter, async (req, res) => {
 });
 
 // Get Order details by ID securely (for guests/tracking)
-app.get('/api/order/:id', zone1Limiter, async (req, res) => {
+app.get('/api/order/:id', zone1Limiter, optionalAuth, async (req, res) => {
   try {
     const { id } = req.params;
     // Basic UUID format validation
@@ -550,6 +674,11 @@ app.get('/api/order/:id', zone1Limiter, async (req, res) => {
       return res.status(404).json({ error: 'Order not found' });
     }
 
+    // BOLA FIX: If order belongs to a user, strictly enforce ownership
+    if (order.user_id && (!req.user || req.user.id !== order.user_id)) {
+      return res.status(403).json({ error: 'Forbidden: You do not own this order' });
+    }
+
     // Only return safe fields to prevent leaking full customer data
     res.json({
       id: order.id,
@@ -565,7 +694,7 @@ app.get('/api/order/:id', zone1Limiter, async (req, res) => {
 });
 
 // Final Order Processing Endpoint (Cash On Delivery)
-app.post('/api/place-cod-order', zone1Limiter, async (req, res) => {
+app.post('/api/place-cod-order', zone1Limiter, optionalAuth, async (req, res) => {
   try {
     const { orderId, couponCode } = req.body;
 
@@ -599,6 +728,11 @@ app.post('/api/place-cod-order', zone1Limiter, async (req, res) => {
 
     if (fetchError || !pendingOrder) {
       return res.status(400).json({ error: 'Order not found in database.' });
+    }
+
+    // BOLA FIX: Enforce ownership before allowing COD checkout
+    if (pendingOrder.user_id && (!req.user || req.user.id !== pendingOrder.user_id)) {
+      return res.status(403).json({ error: 'Forbidden: You do not own this order' });
     }
 
     const { error: updateError } = await supabaseAdmin
@@ -653,7 +787,8 @@ app.post('/api/place-cod-order', zone1Limiter, async (req, res) => {
     
     if (srToken) {
       const payload = generateShiprocketPayload(orderData);
-      const srReq = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/ad', {
+      const srReq = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
+        signal: AbortSignal.timeout(5000),
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -677,7 +812,7 @@ app.post('/api/place-cod-order', zone1Limiter, async (req, res) => {
 });
 
 // Sanity Product Updater Endpoint (Zone 1)
-app.post('/api/update-product', zone1Limiter, async (req, res) => {
+app.post('/api/update-product', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { productId, updates } = req.body;
     if (!productId || !updates) {
@@ -694,7 +829,7 @@ app.post('/api/update-product', zone1Limiter, async (req, res) => {
 
 // --- SECURE COUPON MANAGEMENT (Requires Service Role Key) ---
 
-app.post('/api/create-coupon', zone1Limiter, async (req, res) => {
+app.post('/api/create-coupon', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { code, discount_percent, type = 'percentage', min_cart_value = 0, usage_limit = null } = req.body;
     if (!code || discount_percent === undefined) return res.status(400).json({ error: 'Missing code or discount' });
@@ -718,7 +853,7 @@ app.post('/api/create-coupon', zone1Limiter, async (req, res) => {
   }
 });
 
-app.post('/api/toggle-coupon', zone1Limiter, async (req, res) => {
+app.post('/api/toggle-coupon', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { id, is_active } = req.body;
     const { data, error } = await supabaseAdmin
@@ -735,7 +870,7 @@ app.post('/api/toggle-coupon', zone1Limiter, async (req, res) => {
   }
 });
 
-app.post('/api/delete-coupon', zone1Limiter, async (req, res) => {
+app.post('/api/delete-coupon', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { id } = req.body;
     const { error } = await supabaseAdmin
@@ -752,7 +887,7 @@ app.post('/api/delete-coupon', zone1Limiter, async (req, res) => {
 });
 
 // --- SECURE SITE SETTINGS (Requires Service Role Key) ---
-app.post('/api/update-settings', zone1Limiter, async (req, res) => {
+app.post('/api/update-settings', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { store_email, store_phone, shipping_flat_rate, announcement_text, bulk_weight_options, maintenance_mode } = req.body;
     
@@ -779,7 +914,7 @@ app.post('/api/update-settings', zone1Limiter, async (req, res) => {
 });
 
 // --- ADMIN DATABASE BACKUP ---
-app.get('/api/admin/backup-sql', async (req, res) => {
+app.get('/api/admin/backup-sql', requireAdmin, async (req, res) => {
   try {
     const generateInsert = (table, rows) => {
       if (!rows || rows.length === 0) return '';
@@ -822,7 +957,7 @@ app.get('/api/admin/backup-sql', async (req, res) => {
 });
 
 // --- JOURNAL POST CREATION ---
-app.post('/api/create-journal-post', zone1Limiter, async (req, res) => {
+app.post('/api/create-journal-post', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { title, slug, excerpt, content } = req.body;
     
@@ -844,7 +979,7 @@ app.post('/api/create-journal-post', zone1Limiter, async (req, res) => {
 });
 
 // --- JOURNAL POST UPDATE ---
-app.post('/api/update-journal-post', zone1Limiter, async (req, res) => {
+app.post('/api/update-journal-post', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { id, updates } = req.body;
     if (!id || !updates) return res.status(400).json({ error: 'Missing id or updates' });
@@ -862,7 +997,7 @@ app.post('/api/update-journal-post', zone1Limiter, async (req, res) => {
 });
 
 // --- CONTACT FORM SYSTEM ---
-app.post('/api/submit-contact', zone2Limiter, async (req, res) => {
+app.post('/api/submit-contact', contactFormLimiter, validate(contactSchema), async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
@@ -890,8 +1025,8 @@ app.post('/api/submit-contact', zone2Limiter, async (req, res) => {
   }
 });
 
-// --- AI CHATBOT PROXY (Protects N8N Webhook) ---
-app.post('/api/chat', zone2Limiter, async (req, res) => {
+// --- N8N AI CHATBOT PROXY ---
+app.post('/api/chat', aiLimiter, async (req, res) => {
   try {
     const { message, sessionId } = req.body;
     const webhookUrl = process.env.N8N_WEBHOOK_URL;
@@ -901,6 +1036,7 @@ app.post('/api/chat', zone2Limiter, async (req, res) => {
     }
 
     const response = await fetch(webhookUrl, {
+      signal: AbortSignal.timeout(5000),
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -921,7 +1057,7 @@ app.post('/api/chat', zone2Limiter, async (req, res) => {
 });
 
 // --- BOOKINGS SYSTEM ---
-app.get('/api/get-bookings', async (req, res) => {
+app.get('/api/get-bookings', requireAdmin, async (req, res) => {
   try {
     const supabaseAdmin = createClient(
       process.env.VITE_SUPABASE_URL,
@@ -941,7 +1077,7 @@ app.get('/api/get-bookings', async (req, res) => {
   }
 });
 
-app.get('/api/admin/customers', async (req, res) => {
+app.get('/api/admin/customers', requireAdmin, async (req, res) => {
   try {
     const supabaseAdmin = createClient(
       process.env.VITE_SUPABASE_URL,
@@ -959,7 +1095,7 @@ app.get('/api/admin/customers', async (req, res) => {
 });
 
 // --- AUTHENTICATION (BYPASS SUPABASE LIMITS) ---
-app.post('/api/auth/register', zone1Limiter, async (req, res) => {
+app.post('/api/auth/register', authLimiter, validate(registerSchema), async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
     
@@ -1021,22 +1157,9 @@ app.post('/api/auth/register', zone1Limiter, async (req, res) => {
   }
 });
 
-app.post('/api/delete-account', zone2Limiter, async (req, res) => {
+app.post('/api/delete-account', zone2Limiter, requireAuth, async (req, res) => {
   try {
-    const { userId } = req.body;
-    const authHeader = req.headers.authorization;
-    
-    if (!userId || !authHeader) {
-      return res.status(400).json({ error: 'Missing credentials' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    
-    // Verify the JWT is actually for the user requesting deletion
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
-    if (authError || !user || user.id !== userId) {
-      return res.status(401).json({ error: 'Unauthorized deletion request' });
-    }
+    const userId = req.user.id;
 
     // 1. Anonymize Orders (so Admin Dashboard sales don't break)
     await supabaseAdmin
@@ -1057,7 +1180,7 @@ app.post('/api/delete-account', zone2Limiter, async (req, res) => {
   }
 });
 
-app.post('/api/submit-booking', zone2Limiter, async (req, res) => {
+app.post('/api/submit-booking', contactFormLimiter, validate(bookingSchema), async (req, res) => {
   try {
     const { experience_type, guests, date, time, full_name, phone, email, special_requests } = req.body;
     
@@ -1104,7 +1227,7 @@ app.post('/api/submit-booking', zone2Limiter, async (req, res) => {
   }
 });
 
-app.post('/api/update-booking-status', zone1Limiter, async (req, res) => {
+app.post('/api/update-booking-status', zone1Limiter, requireAdmin, async (req, res) => {
   try {
     const { id, status } = req.body;
     
@@ -1155,11 +1278,14 @@ app.post('/api/update-booking-status', zone1Limiter, async (req, res) => {
 // ==========================================
 // POST /api/support-tickets - Submit a complaint
 // ==========================================
-app.post('/api/support-tickets', async (req, res) => {
+app.post('/api/support-tickets', ticketLimiter, requireAuth, async (req, res) => {
   try {
-    const { orderId, userId, issueType, message, imageUrl } = req.body;
+    const { orderId, issueType, message, imageUrl } = req.body;
     
-    if (!orderId || !userId || !issueType || !message) {
+    // BOLA FIX: Never trust userId from client
+    const userId = req.user.id;
+
+    if (!orderId || !issueType || !message) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -1187,7 +1313,7 @@ app.post('/api/support-tickets', async (req, res) => {
 // ==========================================
 // GET /api/support-tickets - Get all complaints (Admin)
 // ==========================================
-app.get('/api/support-tickets', async (req, res) => {
+app.get('/api/support-tickets', requireAdmin, async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from('support_tickets')
@@ -1208,7 +1334,7 @@ app.get('/api/support-tickets', async (req, res) => {
 // ==========================================
 // PUT /api/support-tickets/:id - Update ticket status (Admin)
 // ==========================================
-app.put('/api/support-tickets/:id', async (req, res) => {
+app.put('/api/support-tickets/:id', requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;

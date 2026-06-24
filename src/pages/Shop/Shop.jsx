@@ -221,32 +221,44 @@ export default function Shop() {
                           <p className="shop-card__desc">{product.description}</p>
                         </Link>
                         <div className="shop-card__footer">
-                          <span className="shop-card__price">₹{Math.round(product.price || 0)}</span>
-                          {product.inStock === false ? (
-                            <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold', padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px' }}>
-                              OUT OF STOCK
-                            </span>
-                          ) : (
-                            <motion.button
-                              className="shop-card__add"
-                              onClick={() => {
-                                const defaultWeight = product.moq || 250;
-                                addToCart({
-                                  ...product,
-                                  id: `${product._id}-${defaultWeight}`,
-                                  originalId: product._id,
-                                  name: `${product.name} (${defaultWeight >= 1000 ? defaultWeight/1000 + ' kg' : defaultWeight + ' gms'})`,
-                                  packWeight: defaultWeight,
-                                  quantity: 1
-                                });
-                              }}
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              aria-label={`Add ${product.name} to cart`}
-                            >
-                              <Plus size={16} />
-                            </motion.button>
-                          )}
+                          {(() => {
+                            const moq = product.moq || 250;
+                            const defaultWeight = moq > 20 ? 50 : moq;
+                            const basePrice = product.price || 0;
+                            const displayPrice = moq > 20 ? Math.round((basePrice / moq) * 50) : basePrice;
+
+                            return (
+                              <>
+                                <span className="shop-card__price">₹{displayPrice} {moq > 20 && <span style={{fontSize: '0.65rem', opacity: 0.7}}>from 50g</span>}</span>
+                                {product.inStock === false ? (
+                                  <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold', padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px' }}>
+                                    OUT OF STOCK
+                                  </span>
+                                ) : (
+                                  <motion.button
+                                    className="shop-card__add"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      addToCart({
+                                        ...product,
+                                        id: `${product._id}-${defaultWeight}`,
+                                        originalId: product._id,
+                                        name: `${product.name} (${defaultWeight >= 1000 ? defaultWeight/1000 + ' kg' : defaultWeight + ' gms'})`,
+                                        price: displayPrice,
+                                        packWeight: defaultWeight,
+                                        quantity: 1
+                                      });
+                                    }}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    aria-label={`Add ${product.name} to cart`}
+                                  >
+                                    <Plus size={16} />
+                                  </motion.button>
+                                )}
+                              </>
+                            );
+                          })()}
                         </div>
                       </motion.div>
                     ))}

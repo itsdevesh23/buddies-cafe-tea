@@ -1621,7 +1621,7 @@ const AdminDashboard = () => {
                         style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.2)', color: '#fff', fontSize: '1rem' }}
                         required
                       />
-                      <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.5rem' }}>Comma separated list of weights in grams. E.g. "500, 1000, 2000" (will appear as 500gms, 1kg, 2kg on product pages).</p>
+                      <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.5rem' }}>Comma separated list of weights in grams. E.g. "50, 100, 150, 200, 250" (will appear as 50gms, 100gms etc. on product pages).</p>
                     </div>
 
                     <button type="submit" className="admin-btn primary" style={{ marginTop: '1rem', width: '100%' }} disabled={isSavingSettings}>

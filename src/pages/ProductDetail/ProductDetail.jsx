@@ -31,7 +31,7 @@ export default function ProductDetail() {
           id: res._id,
           slug: res.slug?.current || res.slug
         });
-        setPackWeight(res.moq || 250);
+        setPackWeight(res.moq > 20 ? 50 : (res.moq || 1));
         setQty(1);
         
         // Fetch related products
@@ -80,12 +80,10 @@ export default function ProductDetail() {
   const moq = product.moq || 250;
   const packPrice = Math.round((product.price / moq) * packWeight);
   
-  const customWeightsString = product.customBulkWeights || settings?.bulk_weight_options || '500, 1000, 2000, 3000, 4000';
+  const customWeightsString = '50, 100, 150, 200, 250';
   const customWeights = customWeightsString.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
   
-  const availablePacks = [moq, ...customWeights].filter((w, index, self) => 
-    self.indexOf(w) === index && w >= moq
-  );
+  const availablePacks = moq > 20 ? customWeights : [moq];
 
   return (
     <PageTransition>

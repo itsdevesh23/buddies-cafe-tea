@@ -243,6 +243,7 @@ const Footer = () => {
           <Link to="/terms" className="footer__legal-link">Terms</Link>
           <Link to="/shipping" className="footer__legal-link">Shipping</Link>
           <Link to="/refunds" className="footer__legal-link">Refunds</Link>
+          <Link to="/disclaimer" className="footer__legal-link">Disclaimer</Link>
         </div>
       </div>
     </footer>

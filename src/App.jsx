@@ -18,6 +18,9 @@ import ArticlePage from './pages/Journal/ArticlePage';
 import ContactPage from './pages/Contact/ContactPage';
 import FAQPage from './pages/FAQ/FAQPage';
 import ShippingPage from './pages/Shipping/ShippingPage';
+import ShippingPolicy from './pages/Policies/ShippingPolicy';
+import RefundPolicy from './pages/Policies/RefundPolicy';
+import Disclaimer from './pages/Policies/Disclaimer';
 import AccountPage from './pages/Account/AccountPage';
 import BookingPage from './pages/Booking/BookingPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
@@ -27,6 +30,8 @@ import BrewingGuidePage from './pages/BrewingGuidePage/BrewingGuidePage';
 import OrderConfirmation from './pages/OrderConfirmation/OrderConfirmation';
 import OrderTracking from './pages/OrderTracking/OrderTracking';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import TermsAndConditions from './pages/Policies/TermsAndConditions';
+import PrivacyPolicy from './pages/Policies/PrivacyPolicy';
 import { Toaster } from 'react-hot-toast';
 
 export default function App() {
@@ -76,6 +81,11 @@ export default function App() {
                   <Route path="/track-order" element={<OrderTracking />} />
                   <Route path="/tracking" element={<OrderTracking />} />
                   <Route path="/brewing-guide" element={<BrewingGuidePage />} />
+                  <Route path="/terms" element={<TermsAndConditions />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/shipping" element={<ShippingPolicy />} />
+                  <Route path="/refunds" element={<RefundPolicy />} />
+                  <Route path="/disclaimer" element={<Disclaimer />} />
                 </Route>
                 
                 {/* Admin Route - No Layout Header/Footer */}

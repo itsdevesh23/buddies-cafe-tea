@@ -294,7 +294,7 @@ app.use(async (req, res, next) => {
 
 app.post('/api/create-order', zone1Limiter, optionalAuth, async (req, res) => {
   try {
-    const { items, couponCode, shippingInfo } = req.body;
+    const { items, couponCode, shippingInfo, paymentMethod, shippingCost } = req.body;
     
     // BOLA FIX: Never trust userId from client. If logged in, grab from token.
     const finalUserId = req.user ? req.user.id : null;
@@ -345,13 +345,24 @@ app.post('/api/create-order', zone1Limiter, optionalAuth, async (req, res) => {
 
     // 3. Add Shipping
     let finalTotal = calculatedSubtotal - discount;
-    const { data: settings } = await supabaseAdmin.from('site_settings').select('shipping_flat_rate').eq('id', 1).single();
-    if (settings && settings.shipping_flat_rate) {
-      finalTotal += settings.shipping_flat_rate;
+    let finalShippingCost = 0;
+
+    if (finalTotal >= 4999) {
+      finalShippingCost = 0; // Free shipping over 4999
+    } else if (shippingCost !== undefined && shippingCost !== null && shippingCost >= 0) {
+      finalShippingCost = Number(shippingCost);
+    } else {
+      const { data: settings } = await supabaseAdmin.from('site_settings').select('shipping_flat_rate').eq('id', 1).single();
+      if (settings && settings.shipping_flat_rate) {
+        finalShippingCost = settings.shipping_flat_rate;
+      } else {
+        finalShippingCost = 150;
+      }
     }
+    
+    finalTotal += finalShippingCost;
 
     // 4. Create Razorpay Order (ONLY IF NOT COD)
-    const { paymentMethod } = req.body;
     let order = null;
 
     if (paymentMethod !== 'cod') {

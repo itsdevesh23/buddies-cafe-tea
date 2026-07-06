@@ -147,7 +147,8 @@ const CheckoutPage = () => {
             couponCode: couponCode || null, 
             shippingInfo, 
             userId: user ? user.id : null,
-            paymentMethod: 'cod'
+            paymentMethod: 'cod',
+            shippingCost: shippingCost
           })
         });
 
@@ -216,7 +217,8 @@ const CheckoutPage = () => {
           couponCode: couponCode || null, 
           shippingInfo, 
           userId: user ? user.id : null,
-          paymentMethod: 'online'
+          paymentMethod: 'online',
+          shippingCost: shippingCost
         })
       });
 

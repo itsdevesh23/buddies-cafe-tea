@@ -162,7 +162,10 @@ const CheckoutPage = () => {
         // 2. Finalize COD Order
         const finalizeRes = await fetch((import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/place-cod-order', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+          },
           body: JSON.stringify({
             orderId: orderData.id,
             couponCode: couponCode || null

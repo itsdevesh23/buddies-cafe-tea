@@ -179,7 +179,7 @@ const CheckoutPage = () => {
           setIsProcessing(false);
         }
       } catch (err) {
-        toast.error('An error occurred during checkout');
+        toast.error(`An error occurred: ${err.message || 'Network error'}`);
         setIsProcessing(false);
         console.error(err);
       }
@@ -293,7 +293,7 @@ const CheckoutPage = () => {
       
     } catch (err) {
       console.error(err);
-      toast.error('Error connecting to backend.');
+      toast.error(`Error connecting to backend: ${err.message || 'Network error'}`);
       setIsProcessing(false);
     }
   };

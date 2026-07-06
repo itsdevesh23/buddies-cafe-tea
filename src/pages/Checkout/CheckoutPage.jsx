@@ -7,6 +7,7 @@ import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useSettings } from '../../context/SettingsContext';
 import { urlFor } from '../../sanity';
+import { supabase } from '../../supabase';
 import toast from 'react-hot-toast';
 import './CheckoutPage.css';
 

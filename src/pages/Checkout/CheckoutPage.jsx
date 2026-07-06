@@ -132,7 +132,7 @@ const CheckoutPage = () => {
     if (paymentMethod === 'cod') {
       try {
         // 1. Create the pending order
-        const backendUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-order';
+        const backendUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/create-order';
         const { data: { session } } = await supabase.auth.getSession();
         
         const result = await fetch(backendUrl, {
@@ -159,7 +159,7 @@ const CheckoutPage = () => {
         }
 
         // 2. Finalize COD Order
-        const finalizeRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/place-cod-order', {
+        const finalizeRes = await fetch((import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/place-cod-order', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -198,7 +198,7 @@ const CheckoutPage = () => {
 
       // Gather Shipping Info from inputs (already declared above)
       // 2. Fetch order ID from our secure backend
-      const backendUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/create-order';
+      const backendUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/create-order';
       const { data: { session } } = await supabase.auth.getSession();
       
       const result = await fetch(backendUrl, {

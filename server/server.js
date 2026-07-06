@@ -50,6 +50,7 @@ app.use((req, res, next) => {
 // 1. CORS - Locked down to specific domains (Rule #32)
 const allowedOrigins = [
   'http://localhost:5173', // Local Vite Dev
+  'http://127.0.0.1:5173',
   process.env.FRONTEND_URL // Vercel/Netlify Live URL
 ].filter(Boolean);
 

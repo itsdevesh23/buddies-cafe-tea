@@ -8,6 +8,12 @@ import PageTransition from '../../components/PageTransition/PageTransition';
 import { client, urlFor } from '../../sanity';
 import './Shop.css';
 
+const danjoCategories = [
+  'BLACK TEA', 'DARJEELING SPECIAL', 'ESSENTIAL OILS', 'FLAVOURED TEA',
+  'FRUIT BASED INFUSION', 'GREEN TEAS', 'HERBAL INFUSION', 'MILKED TEA',
+  'OOLONG TEA', 'WHITE TEA', 'COFFEE', 'SPICES'
+];
+
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
@@ -28,25 +34,26 @@ export default function Shop() {
   }, [activeCategory, search, sort]);
 
   useEffect(() => {
-    client.fetch('*[_type == "product"]').then(res => {
-      if (res && res.length > 0) {
-        // Map sanity fields back to app expectations
-        const mapped = res.map(p => ({
+    const fetchProducts = async () => {
+      try {
+        const data = await client.fetch(`*[_type == "product" && (isDraft != true)]`);
+        const mapped = data.map(p => ({
           ...p,
           id: p._id,
           slug: p.slug?.current || p.slug
         }));
         setSanityProducts(mapped);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    }).catch(err => {
-      console.error("Sanity fetch error:", err);
-      setLoading(false);
-    });
+    };
+    fetchProducts();
   }, []);
 
   const dynamicCategories = useMemo(() => {
-    const rawCategories = Array.from(new Set(sanityProducts.map(p => p.subcategory).filter(Boolean)));
+    const rawCategories = Array.from(new Set(sanityProducts.map((p) => p.subcategory).filter(Boolean)));
     return rawCategories.sort((a, b) => {
       const aIsBrand = a.toUpperCase().startsWith('BRAND') || a.toUpperCase().startsWith('SMALL GROWERS') || a.toUpperCase().startsWith('SILVERMIST');
       const bIsBrand = b.toUpperCase().startsWith('BRAND') || b.toUpperCase().startsWith('SMALL GROWERS') || b.toUpperCase().startsWith('SILVERMIST');
@@ -87,13 +94,33 @@ export default function Shop() {
     switch (sort) {
       case 'price-low': result.sort((a, b) => a.price - b.price); break;
       case 'price-high': result.sort((a, b) => b.price - a.price); break;
-      case 'name': result.sort((a, b) => a.name.localeCompare(b.name)); break;
+      case 'name': 
+        result.sort((a, b) => {
+          const aIsDanjo = danjoCategories.includes(a.subcategory?.toUpperCase());
+          const bIsDanjo = danjoCategories.includes(b.subcategory?.toUpperCase());
+          if (aIsDanjo && !bIsDanjo) return -1;
+          if (!aIsDanjo && bIsDanjo) return 1;
+          return a.name.localeCompare(b.name);
+        });
+        break;
       default: break;
     }
     return result;
   }, [activeCategory, search, sort, sanityProducts]);
 
-  const setCategory = (cat) => {
+  if (loading) {
+    return (
+      <PageTransition>
+        <div className="shop-page__loading" style={{ textAlign: 'center', padding: '4rem' }}>
+          <div className="spinner"></div>
+          <p>Curating teas...</p>
+        </div>
+      </PageTransition>
+    );
+  }
+
+  const handleCategoryChange = (e) => {
+    const cat = e.target.value;
     if (cat === 'All Teas') {
       searchParams.delete('category');
     } else {
@@ -158,22 +185,17 @@ export default function Shop() {
             </div>
             <button
               className={`shop-page__cat-btn ${activeCategory === 'All Teas' ? 'shop-page__cat-btn--active' : ''}`}
-              onClick={() => setCategory('All Teas')}
+              onClick={() => handleCategoryChange({ target: { value: 'All Teas' } })}
             >
               All Teas
             </button>
             {dynamicCategories.map((cat) => {
-              const danjoCategories = [
-                'BLACK TEA', 'DARJEELING SPECIAL', 'ESSENTIAL OILS', 'FLAVOURED TEA',
-                'FRUIT BASED INFUSION', 'GREEN TEAS', 'HERBAL INFUSION', 'MILKED TEA',
-                'OOLONG TEA', 'WHITE TEA', 'COFFEE', 'SPICES'
-              ];
-              const displayName = danjoCategories.includes(cat) ? `Danjo - ${cat}` : cat;
+              const displayName = danjoCategories.includes(cat?.toUpperCase()) ? `Danjo - ${cat}` : cat;
               return (
                 <button
                   key={cat}
                   className={`shop-page__cat-btn ${activeCategory === cat ? 'shop-page__cat-btn--active' : ''}`}
-                  onClick={() => setCategory(cat)}
+                  onClick={() => handleCategoryChange({ target: { value: cat } })}
                 >
                   {displayName}
                 </button>

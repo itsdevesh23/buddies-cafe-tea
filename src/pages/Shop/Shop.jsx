@@ -168,7 +168,7 @@ export default function Shop() {
                 className={`shop-page__cat-btn ${activeCategory === cat ? 'shop-page__cat-btn--active' : ''}`}
                 onClick={() => setCategory(cat)}
               >
-                {cat}
+                Danjo - {cat}
               </button>
             ))}
           </aside>

@@ -97,8 +97,10 @@ const CheckoutPage = () => {
       try {
         const getWeightInKg = (name) => {
           if (!name) return 0.1;
-          const match = name.match(/(\d+)\s*(?:GMS|ML)/i);
-          if (match) return parseInt(match[1]) / 1000;
+          const matchKg = name.match(/([\d.]+)\s*(?:KG|LITER|L)\b/i);
+          if (matchKg) return parseFloat(matchKg[1]);
+          const matchGms = name.match(/(\d+)\s*(?:GMS|ML)\b/i);
+          if (matchGms) return parseInt(matchGms[1]) / 1000;
           return 0.1; // default 100g
         };
         const totalWeight = displayCart.reduce((sum, item) => sum + (getWeightInKg(item.name) * item.quantity), 0);

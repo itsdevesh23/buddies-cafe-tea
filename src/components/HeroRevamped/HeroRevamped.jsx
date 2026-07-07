@@ -110,7 +110,7 @@ export default function HeroRevamped() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 1, ease: 'easeOut' }}
           >
-            <span className="hero-revamped__title-line">DANJO</span>
+            <span className="hero-revamped__title-line">DAN-JO</span>
             <span className="hero-revamped__title-line hero-revamped__title-line--sub">
               TEAS
             </span>

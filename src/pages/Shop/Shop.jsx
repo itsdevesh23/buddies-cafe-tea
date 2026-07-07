@@ -162,15 +162,23 @@ export default function Shop() {
             >
               All Teas
             </button>
-            {dynamicCategories.map((cat) => (
-              <button
-                key={cat}
-                className={`shop-page__cat-btn ${activeCategory === cat ? 'shop-page__cat-btn--active' : ''}`}
-                onClick={() => setCategory(cat)}
-              >
-                Danjo - {cat}
-              </button>
-            ))}
+            {dynamicCategories.map((cat) => {
+              const danjoCategories = [
+                'BLACK TEA', 'DARJEELING SPECIAL', 'ESSENTIAL OILS', 'FLAVOURED TEA',
+                'FRUIT BASED INFUSION', 'GREEN TEAS', 'HERBAL INFUSION', 'MILKED TEA',
+                'OOLONG TEA', 'WHITE TEA', 'COFFEE', 'SPICES'
+              ];
+              const displayName = danjoCategories.includes(cat) ? `Danjo - ${cat}` : cat;
+              return (
+                <button
+                  key={cat}
+                  className={`shop-page__cat-btn ${activeCategory === cat ? 'shop-page__cat-btn--active' : ''}`}
+                  onClick={() => setCategory(cat)}
+                >
+                  {displayName}
+                </button>
+              );
+            })}
           </aside>
 
           <div className="shop-page__grid-container">

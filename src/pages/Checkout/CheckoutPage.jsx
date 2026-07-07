@@ -95,11 +95,19 @@ const CheckoutPage = () => {
       }
       setIsCalculatingShipping(true);
       try {
-        const totalWeight = displayCart.reduce((sum, item) => sum + (0.5 * item.quantity), 0); // Assuming 0.5kg per item for now
+        const getWeightInKg = (name) => {
+          if (!name) return 0.1;
+          const match = name.match(/(\d+)\s*(?:GMS|ML)/i);
+          if (match) return parseInt(match[1]) / 1000;
+          return 0.1; // default 100g
+        };
+        const totalWeight = displayCart.reduce((sum, item) => sum + (getWeightInKg(item.name) * item.quantity), 0);
+        const finalWeight = Math.max(0.5, totalWeight); // Shiprocket minimum is usually 0.5kg
+        
         const res = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/shipping-rates', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ delivery_postcode: pinCode, weight: totalWeight })
+          body: JSON.stringify({ delivery_postcode: pinCode, weight: finalWeight })
         });
         const data = await res.json();
         setShippingCost(data.rate || data.fallback_rate || fallbackShipping);

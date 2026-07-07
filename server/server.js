@@ -51,6 +51,8 @@ app.use((req, res, next) => {
 const allowedOrigins = [
   'http://localhost:5173', // Local Vite Dev
   'http://127.0.0.1:5173',
+  'https://danjoteas.com',
+  'https://www.danjoteas.com',
   process.env.FRONTEND_URL // Vercel/Netlify Live URL
 ].filter(Boolean);
 

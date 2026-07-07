@@ -625,7 +625,7 @@ app.post('/api/place-order', zone1Limiter, validate(orderSchema), async (req, re
       if (process.env.RESEND_API_KEY) {
         if (orderData.shippingInfo.email) {
           resend.emails.send({
-            from: 'Buddies Cafe <onboarding@resend.dev>', 
+            from: 'Buddies Cafe <orders@danjoteas.com>', 
             to: orderData.shippingInfo.email,
             subject: `Order Confirmation #${orderData.orderId}`,
             html: generateCustomerReceipt(orderData)
@@ -633,7 +633,7 @@ app.post('/api/place-order', zone1Limiter, validate(orderSchema), async (req, re
         }
 
         resend.emails.send({
-          from: 'Buddies Cafe <onboarding@resend.dev>',
+          from: 'Buddies Cafe <orders@danjoteas.com>',
           to: 'buddiescafecbe@gmail.com',
           subject: `New Order Alert! #${orderData.orderId}`,
           html: generateAdminAlert(orderData)
@@ -777,7 +777,7 @@ app.post('/api/place-cod-order', zone1Limiter, optionalAuth, async (req, res) =>
       if (process.env.RESEND_API_KEY) {
         if (orderData.shippingInfo.email) {
           resend.emails.send({
-            from: 'Buddies Cafe <onboarding@resend.dev>', 
+            from: 'Buddies Cafe <orders@danjoteas.com>', 
             to: orderData.shippingInfo.email,
             subject: `Order Confirmation #${orderData.orderId}`,
             html: generateCustomerReceipt(orderData)
@@ -785,7 +785,7 @@ app.post('/api/place-cod-order', zone1Limiter, optionalAuth, async (req, res) =>
         }
 
         resend.emails.send({
-          from: 'Buddies Cafe <onboarding@resend.dev>',
+          from: 'Buddies Cafe <orders@danjoteas.com>',
           to: 'buddiescafecbe@gmail.com',
           subject: `New COD Order! #${orderData.orderId}`,
           html: generateAdminAlert(orderData)
@@ -1016,7 +1016,7 @@ app.post('/api/submit-contact', contactFormLimiter, validate(contactSchema), asy
     const { name, email, subject, message } = req.body;
 
     await resend.emails.send({
-      from: 'Buddies Cafe <onboarding@resend.dev>',
+      from: 'Buddies Cafe <orders@danjoteas.com>',
       to: process.env.STORE_OWNER_EMAIL || 'buddiescafecbe@gmail.com',
       reply_to: email,
       subject: `New Contact Message: ${subject}`,
@@ -1141,7 +1141,7 @@ app.post('/api/auth/register', authLimiter, validate(registerSchema), async (req
 
     // 2. Send the custom email using Resend
     const resendResponse = await resend.emails.send({
-      from: 'Buddies Cafe <onboarding@resend.dev>',
+      from: 'Buddies Cafe <orders@danjoteas.com>',
       to: email,
       subject: 'Verify your Buddies Cafe Account',
       html: `
@@ -1225,7 +1225,7 @@ app.post('/api/submit-booking', contactFormLimiter, validate(bookingSchema), asy
     // Send email alert to admin
     try {
       await resend.emails.send({
-        from: 'Buddies Cafe <onboarding@resend.dev>',
+        from: 'Buddies Cafe <orders@danjoteas.com>',
         to: process.env.STORE_OWNER_EMAIL || 'buddiescafecbe@gmail.com',
         subject: `New Booking Request: ${full_name}`,
         html: generateBookingAlert(req.body)
@@ -1264,14 +1264,14 @@ app.post('/api/update-booking-status', zone1Limiter, requireAdmin, async (req, r
     try {
       if (status === 'confirmed') {
         await resend.emails.send({
-          from: 'Buddies Cafe <onboarding@resend.dev>',
+          from: 'Buddies Cafe <orders@danjoteas.com>',
           to: booking.email,
           subject: 'Your Reservation is Confirmed! 🎉',
           html: generateBookingConfirmedEmail(booking)
         });
       } else if (status === 'cancelled') {
         await resend.emails.send({
-          from: 'Buddies Cafe <onboarding@resend.dev>',
+          from: 'Buddies Cafe <orders@danjoteas.com>',
           to: booking.email,
           subject: 'Update regarding your reservation request',
           html: generateBookingCancelledEmail(booking)

@@ -518,10 +518,13 @@ app.post('/api/shipping-rates', zone2Limiter, async (req, res) => {
 
 // Helper to generate Shiprocket Order Payload
 const generateShiprocketPayload = (orderData) => {
+  // Shiprocket strictly requires 10-digit phone numbers for India, no +91 or spaces
+  const cleanPhone = (orderData.shippingInfo.phone || '9876543210').replace(/\D/g, '').slice(-10);
+  
   return {
     order_id: orderData.orderId,
     order_date: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    pickup_location: 'Primary', // Default to 'Primary'
+    pickup_location: 'Primary', // Default to 'Primary'. Must match Shiprocket dashboard exactly.
     billing_customer_name: orderData.shippingInfo.firstName,
     billing_last_name: orderData.shippingInfo.lastName,
     billing_address: orderData.shippingInfo.address,
@@ -530,7 +533,7 @@ const generateShiprocketPayload = (orderData) => {
     billing_state: orderData.shippingInfo.state,
     billing_country: 'India',
     billing_email: orderData.shippingInfo.email || 'customer@buddiescafe.com',
-    billing_phone: orderData.shippingInfo.phone || '9876543210',
+    billing_phone: cleanPhone,
     shipping_is_billing: true,
     order_items: orderData.items.map(item => ({
       name: item.name,
@@ -648,17 +651,24 @@ app.post('/api/place-order', zone1Limiter, validate(orderSchema), async (req, re
     const srToken = await getShiprocketToken();
     
     if (srToken) {
-      const payload = generateShiprocketPayload(orderData);
-      const srReq = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
-        signal: AbortSignal.timeout(5000),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${srToken}`
-        },
-        body: JSON.stringify(payload)
-      });
-      shiprocketResponse = await srReq.json();
+      try {
+        const payload = generateShiprocketPayload(orderData);
+        const srReq = await fetch('https://apiv2.shiprocket.in/v1/external/orders/create/adhoc', {
+          signal: AbortSignal.timeout(5000),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${srToken}`
+          },
+          body: JSON.stringify(payload)
+        });
+        shiprocketResponse = await srReq.json();
+        console.log('Shiprocket Response:', shiprocketResponse);
+      } catch (err) {
+        console.error('Shiprocket API Error:', err);
+      }
+    } else {
+      console.error('Could not create Shiprocket order because srToken is missing.');
     }
 
     res.json({ success: true, message: 'Order created', id: pendingOrder.id });

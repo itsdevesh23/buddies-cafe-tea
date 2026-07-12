@@ -485,16 +485,6 @@ const CheckoutPage = () => {
                         </div>
                       </div>
                     </label>
-                    <label className={`payment-method ${paymentMethod === 'cod' ? 'selected' : ''}`}>
-                      <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
-                      <div className="method-content">
-                        <Truck size={24} />
-                        <div>
-                          <strong>Cash on Delivery</strong>
-                          <p>Pay when you receive the order</p>
-                        </div>
-                      </div>
-                    </label>
                   </div>
                   <div className="form-actions space-between">
                     <button className="btn-secondary" onClick={prevStep} disabled={isProcessing}>

@@ -1036,7 +1036,7 @@ const AdminDashboard = () => {
                           </div>
                         )}
                         <div style={{ fontSize: '1rem', color: '#cbd5e1', marginBottom: '0.5rem' }}>
-                          Delivery Cost: ₹{shippingCost}
+                          Delivery Cost: ₹{Math.round(shippingCost)}
                         </div>
                         <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#4ade80' }}>
                           Total Amount: ₹{selectedOrderDetails.total_amount}
@@ -1050,7 +1050,10 @@ const AdminDashboard = () => {
                       <>
                         <p style={{ margin: '0 0 0.3rem', color: '#fff' }}>{selectedOrderDetails.shipping_info.firstName} {selectedOrderDetails.shipping_info.lastName}</p>
                         <p style={{ margin: '0 0 0.3rem' }}>{selectedOrderDetails.shipping_info.address}</p>
-                        <p style={{ margin: 0 }}>{selectedOrderDetails.shipping_info.city}, {selectedOrderDetails.shipping_info.state} - {selectedOrderDetails.shipping_info.pinCode}</p>
+                        <p style={{ margin: '0 0 0.3rem' }}>{selectedOrderDetails.shipping_info.city}, {selectedOrderDetails.shipping_info.state} - {selectedOrderDetails.shipping_info.pinCode}</p>
+                        {selectedOrderDetails.shipping_info.phone && (
+                          <p style={{ margin: '0' }}>Phone: {selectedOrderDetails.shipping_info.phone}</p>
+                        )}
                       </>
                     ) : 'No shipping info provided.'}
                   </div>

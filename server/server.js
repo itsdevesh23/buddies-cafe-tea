@@ -848,7 +848,7 @@ app.post('/api/cancel-order', zone1Limiter, requireAdmin, async (req, res) => {
     }
 
     // Get order from supabase
-    const { data: pendingOrder, error: fetchError } = await supabase
+    const { data: pendingOrder, error: fetchError } = await supabaseAdmin
       .from('orders')
       .select('*')
       .eq('id', orderId)
@@ -859,7 +859,7 @@ app.post('/api/cancel-order', zone1Limiter, requireAdmin, async (req, res) => {
     }
 
     // Update status to 'Cancelled'
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('orders')
       .update({ status: 'Cancelled' })
       .eq('id', orderId);

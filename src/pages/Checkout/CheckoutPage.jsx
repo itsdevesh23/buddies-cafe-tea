@@ -33,6 +33,11 @@ const CheckoutPage = () => {
   const [userLoaded, setUserLoaded] = useState(false);
 
   React.useEffect(() => {
+    if (!user) {
+      toast.error('Please login to place an order.');
+      navigate('/account');
+      return;
+    }
     if (user && !userLoaded) {
       setEmail(user.email || '');
       setPhone(user.user_metadata?.phone || '');
@@ -43,7 +48,7 @@ const CheckoutPage = () => {
       }
       setUserLoaded(true);
     }
-  }, [user, userLoaded]);
+  }, [user, userLoaded, navigate]);
 
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('online');
@@ -138,68 +143,6 @@ const CheckoutPage = () => {
       phone,
       email
     };
-
-    // Handle Cash on Delivery
-    if (paymentMethod === 'cod') {
-      try {
-        // 1. Create the pending order
-        const backendUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/create-order';
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        const result = await fetch(backendUrl, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
-          },
-          body: JSON.stringify({ 
-            items: displayCart, 
-            couponCode: couponCode || null, 
-            shippingInfo, 
-            userId: user ? user.id : null,
-            paymentMethod: 'cod',
-            shippingCost: shippingCost
-          })
-        });
-
-        const orderData = await result.json();
-
-        if (!result.ok) {
-          toast.error(orderData.error || 'Failed to create order');
-          setIsProcessing(false);
-          return;
-        }
-
-        // 2. Finalize COD Order
-        const finalizeRes = await fetch((import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/place-cod-order', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
-          },
-          body: JSON.stringify({
-            orderId: orderData.id,
-            couponCode: couponCode || null
-          })
-        });
-
-        const finalizeData = await finalizeRes.json();
-        
-        if (finalizeData.success) {
-          clearCart();
-          setIsProcessing(false);
-          navigate(`/order-confirmation/${orderData.id}`);
-        } else {
-          toast.error('Error saving COD order: ' + finalizeData.error);
-          setIsProcessing(false);
-        }
-      } catch (err) {
-        toast.error(`An error occurred: ${err.message || 'Network error'}`);
-        setIsProcessing(false);
-        console.error(err);
-      }
-      return;
-    }
 
     // Handle Online Payment (Razorpay)
     try {
@@ -476,17 +419,6 @@ const CheckoutPage = () => {
                         <div>
                           <strong>Pay Online</strong>
                           <p>UPI, Credit/Debit Cards, Netbanking via Razorpay</p>
-                        </div>
-                      </div>
-                    </label>
-
-                    <label className={`payment-method ${paymentMethod === 'cod' ? 'selected' : ''}`}>
-                      <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
-                      <div className="method-content">
-                        <Truck size={24} />
-                        <div>
-                          <strong>Cash on Delivery</strong>
-                          <p>Pay when you receive the order</p>
                         </div>
                       </div>
                     </label>

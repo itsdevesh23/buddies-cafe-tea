@@ -385,7 +385,11 @@ app.post('/api/create-order', zone1Limiter, optionalAuth, async (req, res) => {
       user_id: finalUserId,
       items: items,
       total_amount: finalTotal,
-      shipping_info: shippingInfo,
+      shipping_info: {
+        ...shippingInfo,
+        shipping_cost: finalShippingCost,
+        discount_amount: calculatedDiscount
+      },
       status: 'Pending Payment',
       payment_status: 'Pending',
       payment_method: paymentMethod === 'cod' ? 'cod' : 'online'

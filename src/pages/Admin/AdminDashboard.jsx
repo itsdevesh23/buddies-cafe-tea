@@ -1020,10 +1020,29 @@ const AdminDashboard = () => {
                     </tbody>
                   </table>
                   
-                  <div style={{ textAlign: 'right', fontSize: '1.2rem', fontWeight: 'bold', color: '#4ade80', marginBottom: '1.5rem' }}>
-                    Total Amount: ₹{selectedOrderDetails.total_amount}
-                  </div>
-
+                  {(() => {
+                    const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+                    const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
+                      ? selectedOrderDetails.shipping_info.shipping_cost 
+                      : Math.max(0, selectedOrderDetails.total_amount - subtotal);
+                    const discountAmount = selectedOrderDetails.shipping_info?.discount_amount || 0;
+                    
+                    return (
+                      <div style={{ textAlign: 'right', marginBottom: '1.5rem' }}>
+                        {discountAmount > 0 && (
+                          <div style={{ fontSize: '1rem', color: '#ef4444', marginBottom: '0.2rem' }}>
+                            Discount: -₹{discountAmount}
+                          </div>
+                        )}
+                        <div style={{ fontSize: '1rem', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                          Delivery Cost: ₹{shippingCost}
+                        </div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#4ade80' }}>
+                          Total Amount: ₹{selectedOrderDetails.total_amount}
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <h3 style={{ color: '#f8fafc', marginBottom: '1rem', fontSize: '1.1rem' }}>Shipping Address</h3>
                   <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px', color: '#cbd5e1', fontSize: '0.95rem' }}>
                     {selectedOrderDetails.shipping_info ? (

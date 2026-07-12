@@ -147,10 +147,11 @@ const CheckoutPage = () => {
     // Handle COD Payment
     if (paymentMethod === 'cod') {
       try {
-        const backendUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/place-cod-order';
+        const backendCreateUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/create-order';
         const { data: { session } } = await supabase.auth.getSession();
         
-        const result = await fetch(backendUrl, {
+        // Step 1: Create the pending order
+        const createResult = await fetch(backendCreateUrl, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -161,13 +162,37 @@ const CheckoutPage = () => {
             couponCode: couponCode || null, 
             shippingInfo, 
             userId: user ? user.id : null,
+            paymentMethod: 'cod',
             shippingCost: shippingCost
           })
         });
 
-        if (!result.ok) {
-          const errData = await result.json();
-          toast.error(errData.error || 'Server error occurred.');
+        if (!createResult.ok) {
+          const errData = await createResult.json();
+          toast.error(errData.error || 'Server error occurred while creating order.');
+          setIsProcessing(false);
+          return;
+        }
+
+        const pendingOrderData = await createResult.json();
+
+        // Step 2: Finalize COD order and push to Shiprocket
+        const backendPlaceUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/place-cod-order';
+        const placeResult = await fetch(backendPlaceUrl, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+          },
+          body: JSON.stringify({ 
+            orderId: pendingOrderData.id,
+            couponCode: couponCode || null
+          })
+        });
+
+        if (!placeResult.ok) {
+          const errData = await placeResult.json();
+          toast.error(errData.error || 'Server error occurred while placing COD order.');
           setIsProcessing(false);
           return;
         }

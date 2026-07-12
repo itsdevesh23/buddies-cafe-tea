@@ -81,9 +81,8 @@ const ArticlePage = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
             style={{ color: '#e2e8f0', fontSize: '1.1rem', lineHeight: '1.8', whiteSpace: 'pre-wrap' }}
-          >
-            {post.content}
-          </motion.div>
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
         </div>
       </div>
     </PageTransition>

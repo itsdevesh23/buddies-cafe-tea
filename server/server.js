@@ -525,6 +525,18 @@ const generateShiprocketPayload = (orderData) => {
   // Shiprocket strictly requires 10-digit phone numbers for India, no +91 or spaces
   const cleanPhone = (orderData.shippingInfo.phone || '9876543210').replace(/\D/g, '').slice(-10);
   
+  const getWeightInKg = (name) => {
+    if (!name) return 0.1;
+    const matchKg = name.match(/([\d.]+)\s*(?:KG|LITER|L)\b/i);
+    if (matchKg) return parseFloat(matchKg[1]);
+    const matchGms = name.match(/(\d+)\s*(?:GMS|ML)\b/i);
+    if (matchGms) return parseInt(matchGms[1]) / 1000;
+    return 0.1; // default 100g
+  };
+
+  const totalWeight = orderData.items.reduce((sum, item) => sum + (getWeightInKg(item.name) * item.quantity), 0);
+  const finalWeight = Math.max(0.5, totalWeight); // Shiprocket minimum is usually 0.5kg
+
   return {
     order_id: orderData.orderId,
     order_date: new Date().toISOString().replace('T', ' ').substring(0, 19),
@@ -553,7 +565,7 @@ const generateShiprocketPayload = (orderData) => {
     length: 10,
     breadth: 10,
     height: 10,
-    weight: orderData.items.reduce((sum, item) => sum + (0.5 * item.quantity), 0)
+    weight: finalWeight
   };
 };
 

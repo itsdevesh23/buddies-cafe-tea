@@ -49,6 +49,13 @@ export const generateCustomerReceipt = (orderData) => {
 };
 
 export const generateAdminAlert = (orderData) => {
+  const itemsHtml = orderData.items.map(item => `
+    <tr>
+      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${item.price * item.quantity}</td>
+    </tr>
+  `).join('');
+
   return `
     <div style="font-family: Arial, sans-serif; color: #333;">
       <h2>New Order Received! 🚀</h2>
@@ -61,7 +68,26 @@ export const generateAdminAlert = (orderData) => {
         <li><strong>Phone:</strong> ${orderData.shippingInfo.phone}</li>
       </ul>
       
-      <p>Check your <a href="http://localhost:5173/admin">Admin Dashboard</a> for full details and to process shipping.</p>
+      <h3>Order Details:</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #f8fafc; text-align: left;">
+            <th style="padding: 8px; border-bottom: 2px solid #cbd5e1;">Item</th>
+            <th style="padding: 8px; border-bottom: 2px solid #cbd5e1; text-align: right;">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td style="padding: 8px; font-weight: bold; text-align: right;">Total:</td>
+            <td style="padding: 8px; font-weight: bold; text-align: right; color: #4ade80;">₹${orderData.total}</td>
+          </tr>
+        </tfoot>
+      </table>
+      
+      <p>Check your <a href="https://buddies-cafe-tea.vercel.app/admin">Admin Dashboard</a> for full details and to process shipping.</p>
     </div>
   `;
 };

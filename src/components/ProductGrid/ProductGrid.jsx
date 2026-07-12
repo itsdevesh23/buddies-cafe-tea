@@ -145,7 +145,9 @@ export default function ProductGrid({ onAddToCart }) {
             </div>
 
             <div className="product-card__footer">
-              <span className="product-card__price">₹{product.price}</span>
+              <span className="product-card__price">
+                ₹{product.price} <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal', marginLeft: '4px' }}>(incl. GST)</span>
+              </span>
               <motion.button
                 className="product-card__add-btn"
                 onClick={() => onAddToCart(product)}

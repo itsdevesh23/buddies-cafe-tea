@@ -141,7 +141,9 @@ export default function ProductDetail() {
               {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
               <span>5.0 · 24 reviews</span>
             </div>
-            <p className="pdp__price">₹{Math.round(packPrice)}</p>
+            <p className="pdp__price">
+              ₹{Math.round(packPrice)} <span style={{ fontSize: '1rem', color: '#94a3b8', fontWeight: 'normal' }}>(including GST)</span>
+            </p>
             <p className="pdp__desc">{product.description}</p>
 
             {/* Tasting & Aroma */}

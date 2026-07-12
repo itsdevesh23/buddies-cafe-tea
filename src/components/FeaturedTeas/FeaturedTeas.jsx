@@ -134,7 +134,7 @@ export default function FeaturedTeas() {
               {/* Footer */}
               <div className="featured-teas__card-footer">
                 <span className="featured-teas__card-price">
-                  ₹{tea.price}
+                  ₹{tea.price} <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'normal', marginLeft: '4px' }}>(incl. GST)</span>
                 </span>
                 {tea.inStock === false ? (
                   <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold', padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px' }}>

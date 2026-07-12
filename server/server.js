@@ -882,7 +882,7 @@ app.post('/api/cancel-order', zone1Limiter, requireAdmin, async (req, res) => {
       resend.emails.send({
         from: 'Buddies Cafe <orders@danjoteas.com>',
         to: orderData.shippingInfo.email,
-        subject: \`Order Cancelled #\${orderData.orderId}\`,
+        subject: `Order Cancelled #${orderData.orderId}`,
         html: generateOrderCancellationEmail(orderData)
       }).catch(e => console.error('Cancellation Email Error:', e));
     }

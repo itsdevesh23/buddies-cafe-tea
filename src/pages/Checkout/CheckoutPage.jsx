@@ -144,6 +144,44 @@ const CheckoutPage = () => {
       email
     };
 
+    // Handle COD Payment
+    if (paymentMethod === 'cod') {
+      try {
+        const backendUrl = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api/place-cod-order';
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const result = await fetch(backendUrl, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...(session ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+          },
+          body: JSON.stringify({ 
+            items: displayCart, 
+            couponCode: couponCode || null, 
+            shippingInfo, 
+            userId: user ? user.id : null,
+            shippingCost: shippingCost
+          })
+        });
+
+        if (!result.ok) {
+          const errData = await result.json();
+          toast.error(errData.error || 'Server error occurred.');
+          setIsProcessing(false);
+          return;
+        }
+
+        clearCart();
+        navigate('/order-success');
+        return;
+      } catch (err) {
+        toast.error('Server error. Could not connect to backend.');
+        setIsProcessing(false);
+        return;
+      }
+    }
+
     // Handle Online Payment (Razorpay)
     try {
       // 1. Load Razorpay script
@@ -419,6 +457,16 @@ const CheckoutPage = () => {
                         <div>
                           <strong>Pay Online</strong>
                           <p>UPI, Credit/Debit Cards, Netbanking via Razorpay</p>
+                        </div>
+                      </div>
+                    </label>
+                    <label className={`payment-method ${paymentMethod === 'cod' ? 'selected' : ''}`}>
+                      <input type="radio" name="payment" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} />
+                      <div className="method-content">
+                        <Truck size={24} />
+                        <div>
+                          <strong>Cash on Delivery</strong>
+                          <p>Pay when you receive the order</p>
                         </div>
                       </div>
                     </label>

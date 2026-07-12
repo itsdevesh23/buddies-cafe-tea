@@ -239,6 +239,27 @@ const AdminDashboard = () => {
     }
   };
 
+  const cancelOrder = async (orderId) => {
+    if (!window.confirm('Are you sure you want to cancel this order? This will send a cancellation email to the customer.')) return;
+    try {
+      const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/cancel-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Order cancelled & email sent");
+        setOrders(orders.map(o => o.id === orderId ? { ...o, status: 'Cancelled' } : o));
+      } else {
+        toast.error("Failed to cancel order");
+      }
+    } catch (err) {
+      console.error("Cancel order error:", err);
+      toast.error("An error occurred while cancelling");
+    }
+  };
+
   const updateBookingStatus = async (bookingId, newStatus) => {
     try {
       const res = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/update-booking-status', {
@@ -957,12 +978,21 @@ const AdminDashboard = () => {
                               >
                                 View Details
                               </button>
-                              {order.status !== 'Shipped' && (
+                              {order.status !== 'Shipped' && order.status !== 'Cancelled' && (
                                 <button 
                                   className="admin-btn primary"
                                   onClick={() => updateOrderStatus(order.id, 'Shipped')}
                                 >
                                   Mark Shipped
+                                </button>
+                              )}
+                              {order.status !== 'Cancelled' && (
+                                <button 
+                                  className="admin-btn"
+                                  style={{ backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' }}
+                                  onClick={() => cancelOrder(order.id)}
+                                >
+                                  Cancel Order
                                 </button>
                               )}
                             </div>

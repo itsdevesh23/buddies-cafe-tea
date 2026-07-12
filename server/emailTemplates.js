@@ -160,3 +160,48 @@ export const generateBookingCancelledEmail = (bookingData) => {
     </div>
   `;
 };
+
+export const generateOrderCancellationEmail = (orderData) => {
+  const itemsHtml = orderData.items.map(item => `
+    <tr>
+      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${item.price * item.quantity}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden;">
+      <div style="background: #1e293b; padding: 20px; text-align: center;">
+        <h1 style="color: #4ade80; margin: 0;">Buddies Cafe</h1>
+      </div>
+      <div style="padding: 20px;">
+        <h2 style="margin-top: 0; color: #ef4444;">Order Cancelled</h2>
+        <p>Hi ${orderData.shippingInfo.firstName},</p>
+        <p>We are writing to inform you that your order <strong>#${orderData.orderId}</strong> has been cancelled.</p>
+        <p>If you have already been charged for this order, a full refund will be initiated immediately and should reflect in your original payment method shortly.</p>
+        
+        <h3>Cancelled Items:</h3>
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+          <thead>
+            <tr style="background: #f8fafc; text-align: left;">
+              <th style="padding: 10px; border-bottom: 2px solid #cbd5e1;">Item</th>
+              <th style="padding: 10px; border-bottom: 2px solid #cbd5e1; text-align: right;">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHtml}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style="padding: 10px; font-weight: bold; text-align: right;">Total:</td>
+              <td style="padding: 10px; font-weight: bold; text-align: right; color: #ef4444; font-size: 1.1em;">₹${orderData.total}</td>
+            </tr>
+          </tfoot>
+        </table>
+        
+        <p>We apologize for any inconvenience this may have caused. If you have any questions or concerns, please reply to this email or contact us at <a href="mailto:support@buddiescafe.com">support@buddiescafe.com</a>.</p>
+        <p>Warm regards,<br><strong>The Buddies Cafe Team</strong></p>
+      </div>
+    </div>
+  `;
+};

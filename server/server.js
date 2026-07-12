@@ -12,7 +12,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import * as Sentry from '@sentry/node';
 import { nodeProfilingIntegration } from '@sentry/profiling-node';
-import { generateCustomerReceipt, generateAdminAlert, generateBookingAlert, generateBookingConfirmedEmail, generateBookingCancelledEmail } from './emailTemplates.js';
+import { generateCustomerReceipt, generateAdminAlert, generateBookingAlert, generateBookingConfirmedEmail, generateBookingCancelledEmail, generateOrderCancellationEmail } from './emailTemplates.js';
 import { validate, registerSchema, contactSchema, bookingSchema, orderSchema } from './middleware/validate.js';
 
 // Load .env.local from the parent directory
@@ -836,6 +836,61 @@ app.post('/api/place-cod-order', zone1Limiter, optionalAuth, async (req, res) =>
   } catch (error) {
     console.error('Place COD Order Error:', error);
     res.status(500).json({ error: 'Failed to process COD order' });
+  }
+});
+
+// Cancel Order Endpoint (Zone 1)
+app.post('/api/cancel-order', zone1Limiter, requireAdmin, async (req, res) => {
+  try {
+    const { orderId } = req.body;
+    if (!orderId) {
+      return res.status(400).json({ success: false, error: 'Order ID is required' });
+    }
+
+    // Get order from supabase
+    const { data: pendingOrder, error: fetchError } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (fetchError || !pendingOrder) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    // Update status to 'Cancelled'
+    const { error: updateError } = await supabase
+      .from('orders')
+      .update({ status: 'Cancelled' })
+      .eq('id', orderId);
+
+    if (updateError) {
+      return res.status(500).json({ success: false, error: 'Failed to update order status' });
+    }
+
+    // Create orderData for email
+    const orderData = {
+      orderId: pendingOrder.id,
+      userId: pendingOrder.user_id,
+      total: pendingOrder.total_amount,
+      shippingInfo: pendingOrder.shipping_info,
+      items: pendingOrder.items
+    };
+
+    // Send cancellation email
+    if (process.env.RESEND_API_KEY && orderData.shippingInfo && orderData.shippingInfo.email) {
+      resend.emails.send({
+        from: 'Buddies Cafe <orders@danjoteas.com>',
+        to: orderData.shippingInfo.email,
+        subject: \`Order Cancelled #\${orderData.orderId}\`,
+        html: generateOrderCancellationEmail(orderData)
+      }).catch(e => console.error('Cancellation Email Error:', e));
+    }
+
+    return res.json({ success: true, message: 'Order cancelled and email sent' });
+  } catch (err) {
+    console.error('Cancel Order Error:', err);
+    return res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
 

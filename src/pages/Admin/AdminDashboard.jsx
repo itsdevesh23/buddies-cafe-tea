@@ -1043,16 +1043,9 @@ const AdminDashboard = () => {
                     <tbody>
                       {selectedOrderDetails.items?.map((item, idx) => (
                         <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                          <td style={{ padding: '0.8rem 0', color: '#fff' }}>
-                            {item.name}
-                            {item.gst ? (
-                              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px' }}>
-                                Base: ₹{item.sub_total} | GST: ₹{item.gst}
-                              </div>
-                            ) : null}
-                          </td>
+                          <td style={{ padding: '0.8rem 0', color: '#fff' }}>{item.name}</td>
                           <td style={{ padding: '0.8rem 0', textAlign: 'center', color: '#fff' }}>{item.quantity}</td>
-                          <td style={{ padding: '0.8rem 0', textAlign: 'right', color: '#fff' }}>₹{item.price * item.quantity}</td>
+                          <td style={{ padding: '0.8rem 0', textAlign: 'right', color: '#fff' }}>₹{(item.sub_total || item.price) * item.quantity}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1060,6 +1053,9 @@ const AdminDashboard = () => {
                   
                   {(() => {
                     const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+                    const baseSubtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
+                    const totalGst = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+                    
                     const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
                       ? selectedOrderDetails.shipping_info.shipping_cost 
                       : Math.max(0, selectedOrderDetails.total_amount - subtotal);
@@ -1067,6 +1063,19 @@ const AdminDashboard = () => {
                     
                     return (
                       <div style={{ textAlign: 'right', marginBottom: '1.5rem' }}>
+                        <div style={{ fontSize: '1rem', color: '#cbd5e1', marginBottom: '0.2rem' }}>
+                          Subtotal: ₹{baseSubtotal}
+                        </div>
+                        {totalGst > 0 && (
+                          <>
+                            <div style={{ fontSize: '1rem', color: '#cbd5e1', marginBottom: '0.2rem' }}>
+                              CGST: ₹{(totalGst / 2).toFixed(2)}
+                            </div>
+                            <div style={{ fontSize: '1rem', color: '#cbd5e1', marginBottom: '0.5rem' }}>
+                              SGST: ₹{(totalGst / 2).toFixed(2)}
+                            </div>
+                          </>
+                        )}
                         {discountAmount > 0 && (
                           <div style={{ fontSize: '1rem', color: '#ef4444', marginBottom: '0.2rem' }}>
                             Discount: -₹{discountAmount}
@@ -1144,23 +1153,30 @@ const AdminDashboard = () => {
                                 ${selectedOrderDetails.items.map(item => `
                                   <tr>
                                     <td><strong>${item.quantity}x</strong></td>
-                                    <td>
-                                      ${item.name}
-                                      ${item.gst ? `<br><span style="font-size: 0.85em; color: #555;">Base: Rs.${item.sub_total} | GST: Rs.${item.gst}</span>` : ''}
-                                    </td>
-                                    <td class="right">Rs.${item.price * item.quantity}</td>
+                                    <td>${item.name}</td>
+                                    <td class="right">Rs.${(item.sub_total || item.price) * item.quantity}</td>
                                   </tr>
                                 `).join('')}
                               </tbody>
                             </table>
                             ${(() => {
                               const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+                              const baseSubtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
+                              const totalGst = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+
                               const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
                                 ? selectedOrderDetails.shipping_info.shipping_cost 
                                 : Math.max(0, selectedOrderDetails.total_amount - subtotal);
                               const discountAmount = selectedOrderDetails.shipping_info?.discount_amount || 0;
                               
                               let extraRows = '';
+                              extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Subtotal: Rs.${baseSubtotal}</div>`;
+                              
+                              if (totalGst > 0) {
+                                extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">CGST: Rs.${(totalGst / 2).toFixed(2)}</div>`;
+                                extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">SGST: Rs.${(totalGst / 2).toFixed(2)}</div>`;
+                              }
+                              
                               if (discountAmount > 0) {
                                 extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Discount: -Rs.${discountAmount}</div>`;
                               }

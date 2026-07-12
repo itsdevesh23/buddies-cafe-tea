@@ -1,11 +1,11 @@
 export const generateCustomerReceipt = (orderData) => {
+  const baseSubtotal = orderData.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
+  const totalGst = orderData.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+
   const itemsHtml = orderData.items.map(item => `
     <tr>
-      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">
-        ${item.name} x ${item.quantity}
-        ${item.gst ? `<br><small style="color: #64748b; font-size: 0.85em;">Base: ₹${item.sub_total} | GST: ₹${item.gst}</small>` : ''}
-      </td>
-      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${item.price * item.quantity}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${(item.sub_total || item.price) * item.quantity}</td>
     </tr>
   `).join('');
 
@@ -31,6 +31,20 @@ export const generateCustomerReceipt = (orderData) => {
           </tbody>
           <tfoot>
             <tr>
+              <td style="padding: 10px; font-weight: bold; text-align: right;">Subtotal:</td>
+              <td style="padding: 10px; text-align: right;">₹${baseSubtotal}</td>
+            </tr>
+            ${totalGst > 0 ? `
+            <tr>
+              <td style="padding: 10px; color: #64748b; text-align: right;">CGST:</td>
+              <td style="padding: 10px; color: #64748b; text-align: right;">₹${(totalGst / 2).toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px; color: #64748b; text-align: right;">SGST:</td>
+              <td style="padding: 10px; color: #64748b; text-align: right;">₹${(totalGst / 2).toFixed(2)}</td>
+            </tr>
+            ` : ''}
+            <tr>
               <td style="padding: 10px; font-weight: bold; text-align: right;">Total:</td>
               <td style="padding: 10px; font-weight: bold; text-align: right; color: #4ade80; font-size: 1.1em;">₹${orderData.total}</td>
             </tr>
@@ -52,13 +66,13 @@ export const generateCustomerReceipt = (orderData) => {
 };
 
 export const generateAdminAlert = (orderData) => {
+  const baseSubtotal = orderData.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
+  const totalGst = orderData.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+
   const itemsHtml = orderData.items.map(item => `
     <tr>
-      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
-        ${item.name} x ${item.quantity}
-        ${item.gst ? `<br><small style="color: #64748b; font-size: 0.85em;">Base: ₹${item.sub_total} | GST: ₹${item.gst}</small>` : ''}
-      </td>
-      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${item.price * item.quantity}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${(item.sub_total || item.price) * item.quantity}</td>
     </tr>
   `).join('');
 
@@ -86,6 +100,20 @@ export const generateAdminAlert = (orderData) => {
           ${itemsHtml}
         </tbody>
         <tfoot>
+          <tr>
+            <td style="padding: 8px; font-weight: bold; text-align: right;">Subtotal:</td>
+            <td style="padding: 8px; text-align: right;">₹${baseSubtotal}</td>
+          </tr>
+          ${totalGst > 0 ? `
+          <tr>
+            <td style="padding: 8px; color: #64748b; text-align: right;">CGST:</td>
+            <td style="padding: 8px; color: #64748b; text-align: right;">₹${(totalGst / 2).toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px; color: #64748b; text-align: right;">SGST:</td>
+            <td style="padding: 8px; color: #64748b; text-align: right;">₹${(totalGst / 2).toFixed(2)}</td>
+          </tr>
+          ` : ''}
           <tr>
             <td style="padding: 8px; font-weight: bold; text-align: right;">Total:</td>
             <td style="padding: 8px; font-weight: bold; text-align: right; color: #4ade80;">₹${orderData.total}</td>

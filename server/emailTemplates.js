@@ -1,13 +1,24 @@
 export const generateCustomerReceipt = (orderData) => {
-  const baseSubtotal = orderData.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
-  const totalGst = orderData.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+  let baseSubtotal = 0;
+  let totalGst = 0;
+  orderData.items?.forEach(item => {
+    const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+    const basePrice = item.price / (1 + gstRate);
+    const gstAmt = item.price - basePrice;
+    baseSubtotal += basePrice * item.quantity;
+    totalGst += gstAmt * item.quantity;
+  });
 
-  const itemsHtml = orderData.items.map(item => `
-    <tr>
-      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
-      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${(item.sub_total || item.price) * item.quantity}</td>
-    </tr>
-  `).join('');
+  const itemsHtml = orderData.items.map(item => {
+    const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+    const basePrice = item.price / (1 + gstRate);
+    return `
+      <tr>
+        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${Math.round(basePrice * item.quantity)}</td>
+      </tr>
+    `;
+  }).join('');
 
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden;">
@@ -32,7 +43,7 @@ export const generateCustomerReceipt = (orderData) => {
           <tfoot>
             <tr>
               <td style="padding: 10px; font-weight: bold; text-align: right;">Subtotal:</td>
-              <td style="padding: 10px; text-align: right;">₹${baseSubtotal}</td>
+              <td style="padding: 10px; text-align: right;">₹${Math.round(baseSubtotal)}</td>
             </tr>
             ${totalGst > 0 ? `
             <tr>
@@ -66,15 +77,26 @@ export const generateCustomerReceipt = (orderData) => {
 };
 
 export const generateAdminAlert = (orderData) => {
-  const baseSubtotal = orderData.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
-  const totalGst = orderData.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+  let baseSubtotal = 0;
+  let totalGst = 0;
+  orderData.items?.forEach(item => {
+    const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+    const basePrice = item.price / (1 + gstRate);
+    const gstAmt = item.price - basePrice;
+    baseSubtotal += basePrice * item.quantity;
+    totalGst += gstAmt * item.quantity;
+  });
 
-  const itemsHtml = orderData.items.map(item => `
-    <tr>
-      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
-      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${(item.sub_total || item.price) * item.quantity}</td>
-    </tr>
-  `).join('');
+  const itemsHtml = orderData.items.map(item => {
+    const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+    const basePrice = item.price / (1 + gstRate);
+    return `
+      <tr>
+        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${Math.round(basePrice * item.quantity)}</td>
+      </tr>
+    `;
+  }).join('');
 
   return `
     <div style="font-family: Arial, sans-serif; color: #333;">
@@ -102,7 +124,7 @@ export const generateAdminAlert = (orderData) => {
         <tfoot>
           <tr>
             <td style="padding: 8px; font-weight: bold; text-align: right;">Subtotal:</td>
-            <td style="padding: 8px; text-align: right;">₹${baseSubtotal}</td>
+            <td style="padding: 8px; text-align: right;">₹${Math.round(baseSubtotal)}</td>
           </tr>
           ${totalGst > 0 ? `
           <tr>

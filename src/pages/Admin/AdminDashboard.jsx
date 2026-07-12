@@ -1041,20 +1041,32 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {selectedOrderDetails.items?.map((item, idx) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                          <td style={{ padding: '0.8rem 0', color: '#fff' }}>{item.name}</td>
-                          <td style={{ padding: '0.8rem 0', textAlign: 'center', color: '#fff' }}>{item.quantity}</td>
-                          <td style={{ padding: '0.8rem 0', textAlign: 'right', color: '#fff' }}>₹{(item.sub_total || item.price) * item.quantity}</td>
-                        </tr>
-                      ))}
+                      {selectedOrderDetails.items?.map((item, idx) => {
+                        const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+                        const basePrice = item.price / (1 + gstRate);
+                        return (
+                          <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                            <td style={{ padding: '0.8rem 0', color: '#fff' }}>{item.name}</td>
+                            <td style={{ padding: '0.8rem 0', textAlign: 'center', color: '#fff' }}>{item.quantity}</td>
+                            <td style={{ padding: '0.8rem 0', textAlign: 'right', color: '#fff' }}>₹{Math.round(basePrice * item.quantity)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                   
                   {(() => {
                     const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
-                    const baseSubtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
-                    const totalGst = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+                    
+                    let baseSubtotal = 0;
+                    let totalGst = 0;
+                    selectedOrderDetails.items?.forEach(item => {
+                      const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+                      const basePrice = item.price / (1 + gstRate);
+                      const gstAmt = item.price - basePrice;
+                      baseSubtotal += basePrice * item.quantity;
+                      totalGst += gstAmt * item.quantity;
+                    });
                     
                     const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
                       ? selectedOrderDetails.shipping_info.shipping_cost 
@@ -1064,7 +1076,7 @@ const AdminDashboard = () => {
                     return (
                       <div style={{ textAlign: 'right', marginBottom: '1.5rem' }}>
                         <div style={{ fontSize: '1rem', color: '#cbd5e1', marginBottom: '0.2rem' }}>
-                          Subtotal: ₹{baseSubtotal}
+                          Subtotal: ₹{Math.round(baseSubtotal)}
                         </div>
                         {totalGst > 0 && (
                           <>
@@ -1150,19 +1162,31 @@ const AdminDashboard = () => {
                                 </tr>
                               </thead>
                               <tbody>
-                                ${selectedOrderDetails.items.map(item => `
-                                  <tr>
-                                    <td><strong>${item.quantity}x</strong></td>
-                                    <td>${item.name}</td>
-                                    <td class="right">Rs.${(item.sub_total || item.price) * item.quantity}</td>
-                                  </tr>
-                                `).join('')}
+                                ${selectedOrderDetails.items.map(item => {
+                                  const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+                                  const basePrice = item.price / (1 + gstRate);
+                                  return `
+                                    <tr>
+                                      <td><strong>${item.quantity}x</strong></td>
+                                      <td>${item.name}</td>
+                                      <td class="right">Rs.${Math.round(basePrice * item.quantity)}</td>
+                                    </tr>
+                                  `;
+                                }).join('')}
                               </tbody>
                             </table>
                             ${(() => {
                               const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
-                              const baseSubtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.sub_total || item.price) * item.quantity), 0) || 0;
-                              const totalGst = selectedOrderDetails.items?.reduce((sum, item) => sum + ((item.gst || 0) * item.quantity), 0) || 0;
+                              
+                              let baseSubtotal = 0;
+                              let totalGst = 0;
+                              selectedOrderDetails.items?.forEach(item => {
+                                const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
+                                const basePrice = item.price / (1 + gstRate);
+                                const gstAmt = item.price - basePrice;
+                                baseSubtotal += basePrice * item.quantity;
+                                totalGst += gstAmt * item.quantity;
+                              });
 
                               const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
                                 ? selectedOrderDetails.shipping_info.shipping_cost 
@@ -1170,7 +1194,7 @@ const AdminDashboard = () => {
                               const discountAmount = selectedOrderDetails.shipping_info?.discount_amount || 0;
                               
                               let extraRows = '';
-                              extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Subtotal: Rs.${baseSubtotal}</div>`;
+                              extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Subtotal: Rs.${Math.round(baseSubtotal)}</div>`;
                               
                               if (totalGst > 0) {
                                 extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">CGST: Rs.${(totalGst / 2).toFixed(2)}</div>`;

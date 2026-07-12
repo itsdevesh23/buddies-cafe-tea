@@ -144,6 +144,7 @@ const AdminDashboard = () => {
           profiles ( full_name )
         `)
         .is('deleted_at', null)
+        .neq('status', 'Pending Payment')
         .order('created_at', { ascending: false });
       
       if (!ordersError) setOrders(ordersData || []);

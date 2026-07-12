@@ -528,7 +528,7 @@ const generateShiprocketPayload = (orderData) => {
   return {
     order_id: orderData.orderId,
     order_date: new Date().toISOString().replace('T', ' ').substring(0, 19),
-    pickup_location: 'Primary', // Default to 'Primary'. Must match Shiprocket dashboard exactly.
+    pickup_location: 'work', // Must match Shiprocket dashboard Address Nickname exactly.
     billing_customer_name: orderData.shippingInfo.firstName,
     billing_last_name: orderData.shippingInfo.lastName,
     billing_address: orderData.shippingInfo.address,

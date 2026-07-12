@@ -1043,7 +1043,14 @@ const AdminDashboard = () => {
                     <tbody>
                       {selectedOrderDetails.items?.map((item, idx) => (
                         <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                          <td style={{ padding: '0.8rem 0', color: '#fff' }}>{item.name}</td>
+                          <td style={{ padding: '0.8rem 0', color: '#fff' }}>
+                            {item.name}
+                            {item.gst ? (
+                              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '4px' }}>
+                                Base: ₹{item.sub_total} | GST: ₹{item.gst}
+                              </div>
+                            ) : null}
+                          </td>
                           <td style={{ padding: '0.8rem 0', textAlign: 'center', color: '#fff' }}>{item.quantity}</td>
                           <td style={{ padding: '0.8rem 0', textAlign: 'right', color: '#fff' }}>₹{item.price * item.quantity}</td>
                         </tr>
@@ -1137,7 +1144,10 @@ const AdminDashboard = () => {
                                 ${selectedOrderDetails.items.map(item => `
                                   <tr>
                                     <td><strong>${item.quantity}x</strong></td>
-                                    <td>${item.name}</td>
+                                    <td>
+                                      ${item.name}
+                                      ${item.gst ? `<br><span style="font-size: 0.85em; color: #555;">Base: Rs.${item.sub_total} | GST: Rs.${item.gst}</span>` : ''}
+                                    </td>
                                     <td class="right">Rs.${item.price * item.quantity}</td>
                                   </tr>
                                 `).join('')}

@@ -1,7 +1,10 @@
 export const generateCustomerReceipt = (orderData) => {
   const itemsHtml = orderData.items.map(item => `
     <tr>
-      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+      <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">
+        ${item.name} x ${item.quantity}
+        ${item.gst ? `<br><small style="color: #64748b; font-size: 0.85em;">Base: ₹${item.sub_total} | GST: ₹${item.gst}</small>` : ''}
+      </td>
       <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${item.price * item.quantity}</td>
     </tr>
   `).join('');
@@ -51,7 +54,10 @@ export const generateCustomerReceipt = (orderData) => {
 export const generateAdminAlert = (orderData) => {
   const itemsHtml = orderData.items.map(item => `
     <tr>
-      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">${item.name} x ${item.quantity}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+        ${item.name} x ${item.quantity}
+        ${item.gst ? `<br><small style="color: #64748b; font-size: 0.85em;">Base: ₹${item.sub_total} | GST: ₹${item.gst}</small>` : ''}
+      </td>
       <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">₹${item.price * item.quantity}</td>
     </tr>
   `).join('');

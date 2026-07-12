@@ -1113,6 +1113,21 @@ const AdminDashboard = () => {
                                 `).join('')}
                               </tbody>
                             </table>
+                            ${(() => {
+                              const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+                              const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
+                                ? selectedOrderDetails.shipping_info.shipping_cost 
+                                : Math.max(0, selectedOrderDetails.total_amount - subtotal);
+                              const discountAmount = selectedOrderDetails.shipping_info?.discount_amount || 0;
+                              
+                              let extraRows = '';
+                              if (discountAmount > 0) {
+                                extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Discount: -Rs.${discountAmount}</div>`;
+                              }
+                              extraRows += `<div style="text-align: right; padding-top: 5px; padding-bottom: 5px; font-size: 0.9em; color: #333;">Delivery Cost: Rs.${Math.round(shippingCost)}</div>`;
+                              
+                              return extraRows;
+                            })()}
                             <div class="total">Total: Rs.${selectedOrderDetails.total_amount}</div>
                             <div class="address">
                               <strong>Shipping Address:</strong><br/>

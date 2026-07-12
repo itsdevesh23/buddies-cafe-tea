@@ -198,7 +198,7 @@ const CheckoutPage = () => {
         }
 
         clearCart();
-        navigate('/order-success');
+        navigate(`/order-confirmation/${pendingOrderData.id}`);
         return;
       } catch (err) {
         toast.error('Server error. Could not connect to backend.');

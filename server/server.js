@@ -388,7 +388,7 @@ app.post('/api/create-order', zone1Limiter, optionalAuth, async (req, res) => {
       shipping_info: {
         ...shippingInfo,
         shipping_cost: finalShippingCost,
-        discount_amount: calculatedDiscount
+        discount_amount: discount
       },
       status: 'Pending Payment',
       payment_status: 'Pending',

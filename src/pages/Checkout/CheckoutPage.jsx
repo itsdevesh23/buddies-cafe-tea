@@ -31,6 +31,7 @@ const CheckoutPage = () => {
   const [city, setCity] = useState('');
   const [stateLoc, setStateLoc] = useState('');
   const [userLoaded, setUserLoaded] = useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (!user) {
@@ -57,7 +58,6 @@ const CheckoutPage = () => {
   const [shippingCost, setShippingCost] = useState(0);
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
   const [inputCode, setInputCode] = useState('');
-  const navigate = useNavigate();
   
   // Load Razorpay Script dynamically
   const loadRazorpayScript = () => {

@@ -72,7 +72,7 @@ const ContactPage = () => {
                 <Phone className="contact__icon" />
                 <div>
                   <h3>Call Us</h3>
-                  <p>+91 98765 43210</p>
+                  <p>+91 6303690660</p>
                 </div>
               </div>
 
@@ -93,7 +93,7 @@ const ContactPage = () => {
               </div>
             </div>
 
-            <a href="#" className="contact__whatsapp-btn btn-primary">
+            <a href="https://wa.me/916303690660" target="_blank" rel="noreferrer" className="contact__whatsapp-btn btn-primary">
               <MessageCircle size={20} />
               Chat on WhatsApp
             </a>

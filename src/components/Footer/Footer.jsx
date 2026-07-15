@@ -38,7 +38,7 @@ const Footer = () => {
   const { settings } = useSettings() || { settings: null };
 
   const storeEmail = settings?.store_email || 'hello@buddiescafe.com';
-  const storePhone = settings?.store_phone || '+91 98765 43210';
+  const storePhone = settings?.store_phone || '+91 6303690660';
 
   const location = useLocation();
   const isHome = location.pathname === '/';

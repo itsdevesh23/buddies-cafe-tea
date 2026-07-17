@@ -294,7 +294,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.post('/api/create-order', zone1Limiter, optionalAuth, async (req, res) => {
+app.post('/api/create-order', zone1Limiter, validate(orderSchema), optionalAuth, async (req, res) => {
   try {
     const { items, couponCode, shippingInfo, paymentMethod, shippingCost } = req.body;
     
@@ -570,7 +570,7 @@ const generateShiprocketPayload = (orderData) => {
 };
 
 // Final Order Processing Endpoint (Zone 1)
-app.post('/api/place-order', zone1Limiter, validate(orderSchema), async (req, res) => {
+app.post('/api/place-order', zone1Limiter, async (req, res) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, couponCode } = req.body;
 

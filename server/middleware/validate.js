@@ -51,13 +51,14 @@ export const orderSchema = z.object({
       quantity: z.number().int().positive()
     })).min(1, "Order must have at least one item"),
     shippingInfo: z.object({
-      name: z.string().min(1).max(100),
+      firstName: z.string().min(1).max(100),
+      lastName: z.string().max(100).optional().nullable(),
       email: z.string().email(),
       phone: z.string().min(5).max(20),
       address: z.string().min(5).max(500),
       city: z.string().min(2).max(100),
       state: z.string().min(2).max(100),
-      pincode: z.string().min(4).max(20)
+      pinCode: z.string().min(4).max(20)
     }),
     couponCode: z.string().max(50).optional().nullable().or(z.literal(""))
   }).passthrough()

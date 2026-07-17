@@ -6,7 +6,7 @@ const SettingsContext = createContext(null);
 export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState({
     store_email: 'hello@buddiescafe.com',
-    store_phone: '+91 6303690660',
+    store_phone: '+91 98765 43210',
     shipping_flat_rate: 150,
     announcement_text: '',
     bulk_weight_options: '500, 1000, 2000, 3000, 4000'

@@ -986,15 +986,6 @@ const AdminDashboard = () => {
                                   Mark Shipped
                                 </button>
                               )}
-                              {order.status !== 'Cancelled' && (
-                                <button 
-                                  className="admin-btn"
-                                  style={{ backgroundColor: '#ef4444', color: 'white', borderColor: '#ef4444' }}
-                                  onClick={() => cancelOrder(order.id)}
-                                >
-                                  Cancel Order
-                                </button>
-                              )}
                             </div>
                           </td>
                         </tr>
@@ -1117,6 +1108,20 @@ const AdminDashboard = () => {
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem', gap: '1rem' }}>
+                    {selectedOrderDetails.status !== 'Cancelled' && (
+                      <button 
+                        className="admin-btn"
+                        style={{ backgroundColor: 'transparent', color: '#ef4444', borderColor: '#ef4444' }}
+                        onClick={() => {
+                          if (window.confirm('Are you absolute sure you want to cancel this order? This cannot be undone.')) {
+                            cancelOrder(selectedOrderDetails.id);
+                            setSelectedOrderDetails(null);
+                          }
+                        }}
+                      >
+                        Cancel Order
+                      </button>
+                    )}
                     <button className="admin-btn" onClick={() => setSelectedOrderDetails(null)}>Close</button>
                     <button className="admin-btn primary" onClick={() => {
                       const printWindow = window.open('', '_blank');

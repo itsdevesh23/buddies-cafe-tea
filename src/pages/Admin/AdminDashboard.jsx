@@ -1124,8 +1124,7 @@ const AdminDashboard = () => {
                     )}
                     <button className="admin-btn" onClick={() => setSelectedOrderDetails(null)}>Close</button>
                     <button className="admin-btn primary" onClick={() => {
-                      const printWindow = window.open('', '_blank');
-                      printWindow.document.write(`
+                      const printContent = `
                         <html>
                           <head>
                             <title>Print KOT - ${selectedOrderDetails.id}</title>
@@ -1138,51 +1137,33 @@ const AdminDashboard = () => {
                               th, td { padding: 8px 0; border-bottom: 1px dotted #000; text-align: left; }
                               th { border-bottom: 1px solid #000; }
                               .right { text-align: right; }
-                              .center { text-align: center; }
-                              .total { text-align: right; font-weight: bold; font-size: 1.2em; border-top: 2px dashed #000; padding-top: 10px; }
-                              .address { margin-top: 20px; border-top: 2px dashed #000; padding-top: 10px; }
+                              .total { font-weight: bold; font-size: 1.2em; text-align: right; border-top: 2px dashed #000; padding-top: 10px; margin-top: 20px; }
+                              .address { margin-top: 30px; padding-top: 10px; border-top: 1px solid #ccc; font-size: 0.9em; }
                             </style>
                           </head>
                           <body>
                             <div class="header">
-                              <h2>KITCHEN ORDER TICKET</h2>
-                              <p>Buddies Cafe</p>
+                              <h2>BUDDIES CAFE KOT</h2>
+                              <div>Order: ${selectedOrderDetails.id}</div>
                             </div>
                             <div class="meta">
-                              <div>
-                                <strong>Order ID:</strong> ${selectedOrderDetails.id.split('-')[0]}<br/>
-                                <strong>Date:</strong> ${new Date(selectedOrderDetails.created_at).toLocaleString()}<br/>
-                              </div>
-                              <div class="right">
-                                <strong>Customer:</strong> ${selectedOrderDetails.profiles?.full_name || 'Guest'}<br/>
-                                <strong>Type:</strong> ${selectedOrderDetails.payment_method === 'cod' ? 'COD' : 'Prepaid'}
-                              </div>
+                              <div>Date: ${new Date(selectedOrderDetails.created_at).toLocaleString()}</div>
+                              <div>Type: ${selectedOrderDetails.payment_method === 'cod' ? 'COD' : 'PREPAID'}</div>
                             </div>
                             <table>
                               <thead>
-                                <tr>
-                                  <th style="width:50px;">Qty</th>
-                                  <th>Item Name</th>
-                                  <th class="right">Price</th>
-                                </tr>
+                                <tr><th>Item</th><th class="right">Qty</th><th class="right">Price</th></tr>
                               </thead>
                               <tbody>
-                                ${selectedOrderDetails.items.map(item => {
+                                ${selectedOrderDetails.items?.map(item => {
                                   const gstRate = (item.sub_total && item.gst) ? (item.gst / item.sub_total) : 0;
                                   const basePrice = item.price / (1 + gstRate);
-                                  return `
-                                    <tr>
-                                      <td><strong>${item.quantity}x</strong></td>
-                                      <td>${item.name}</td>
-                                      <td class="right">Rs.${Math.round(basePrice * item.quantity)}</td>
-                                    </tr>
-                                  `;
+                                  return `<tr><td>${item.name}</td><td class="right">${item.quantity}</td><td class="right">Rs.${Math.round(basePrice * item.quantity)}</td></tr>`;
                                 }).join('')}
                               </tbody>
                             </table>
                             ${(() => {
                               const subtotal = selectedOrderDetails.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
-                              
                               let baseSubtotal = 0;
                               let totalGst = 0;
                               selectedOrderDetails.items?.forEach(item => {
@@ -1192,7 +1173,6 @@ const AdminDashboard = () => {
                                 baseSubtotal += basePrice * item.quantity;
                                 totalGst += gstAmt * item.quantity;
                               });
-
                               const shippingCost = selectedOrderDetails.shipping_info?.shipping_cost !== undefined 
                                 ? selectedOrderDetails.shipping_info.shipping_cost 
                                 : Math.max(0, selectedOrderDetails.total_amount - subtotal);
@@ -1200,17 +1180,14 @@ const AdminDashboard = () => {
                               
                               let extraRows = '';
                               extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Subtotal: Rs.${Math.round(baseSubtotal)}</div>`;
-                              
                               if (totalGst > 0) {
                                 extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">CGST: Rs.${(totalGst / 2).toFixed(2)}</div>`;
                                 extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">SGST: Rs.${(totalGst / 2).toFixed(2)}</div>`;
                               }
-                              
                               if (discountAmount > 0) {
                                 extraRows += `<div style="text-align: right; padding-top: 5px; font-size: 0.9em; color: #333;">Discount: -Rs.${discountAmount}</div>`;
                               }
                               extraRows += `<div style="text-align: right; padding-top: 5px; padding-bottom: 5px; font-size: 0.9em; color: #333;">Delivery Cost: Rs.${Math.round(shippingCost)}</div>`;
-                              
                               return extraRows;
                             })()}
                             <div class="total">Total: Rs.${selectedOrderDetails.total_amount}</div>
@@ -1222,13 +1199,33 @@ const AdminDashboard = () => {
                                 Phone: ${selectedOrderDetails.shipping_info.phone || 'N/A'}
                               ` : 'N/A'}
                             </div>
-                            <script>
-                              window.onload = () => { window.print(); window.close(); }
-                            </script>
                           </body>
                         </html>
-                      `);
-                      printWindow.document.close();
+                      `;
+
+                      const iframe = document.createElement('iframe');
+                      iframe.style.position = 'fixed';
+                      iframe.style.right = '0';
+                      iframe.style.bottom = '0';
+                      iframe.style.width = '0';
+                      iframe.style.height = '0';
+                      iframe.style.border = '0';
+                      document.body.appendChild(iframe);
+
+                      const doc = iframe.contentWindow.document;
+                      doc.open();
+                      doc.write(printContent);
+                      doc.close();
+
+                      iframe.contentWindow.focus();
+                      setTimeout(() => {
+                        iframe.contentWindow.print();
+                        setTimeout(() => {
+                          if (document.body.contains(iframe)) {
+                            document.body.removeChild(iframe);
+                          }
+                        }, 1000);
+                      }, 250);
                     }}>
                       🖨️ Print KOT
                     </button>

@@ -608,13 +608,15 @@ const AdminDashboard = () => {
 
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
-    filteredOrders = filteredOrders.filter(o => o.id?.toLowerCase().includes(q) || o.profiles?.full_name?.toLowerCase().includes(q));
-    filteredCustomers = filteredCustomers.filter(c => c.user_metadata?.full_name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q));
-    filteredJournalPosts = filteredJournalPosts.filter(j => j.title?.toLowerCase().includes(q) || j.slug?.toLowerCase().includes(q));
-    filteredSupportTickets = filteredSupportTickets.filter(t => t.id?.toLowerCase().includes(q) || t.profiles?.full_name?.toLowerCase().includes(q) || t.issue_type?.toLowerCase().includes(q));
-    filteredBookings = filteredBookings.filter(b => b.full_name?.toLowerCase().includes(q) || b.email?.toLowerCase().includes(q));
-    filteredCoupons = filteredCoupons.filter(c => c.code?.toLowerCase().includes(q));
-    filteredLowStockProducts = filteredLowStockProducts.filter(p => p.name?.toLowerCase().includes(q));
+    const safeMatch = (val) => val ? String(val).toLowerCase().includes(q) : false;
+    
+    filteredOrders = filteredOrders.filter(o => safeMatch(o.id) || safeMatch(o.profiles?.full_name));
+    filteredCustomers = filteredCustomers.filter(c => safeMatch(c.user_metadata?.full_name) || safeMatch(c.email));
+    filteredJournalPosts = filteredJournalPosts.filter(j => safeMatch(j.title) || safeMatch(j.slug));
+    filteredSupportTickets = filteredSupportTickets.filter(t => safeMatch(t.id) || safeMatch(t.profiles?.full_name) || safeMatch(t.issue_type));
+    filteredBookings = filteredBookings.filter(b => safeMatch(b.full_name) || safeMatch(b.email));
+    filteredCoupons = filteredCoupons.filter(c => safeMatch(c.code));
+    filteredLowStockProducts = filteredLowStockProducts.filter(p => safeMatch(p.name));
   }
 
   const totalRevenue = filteredOrders.reduce((sum, o) => {

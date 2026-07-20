@@ -73,6 +73,7 @@ const AdminDashboard = () => {
   const [editStockQuantity, setEditStockQuantity] = useState(0);
   const [editStock, setEditStock] = useState(true);
   const [editCustomWeights, setEditCustomWeights] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Security Check
   const isAuthorized = isAdmin;
@@ -597,8 +598,14 @@ const AdminDashboard = () => {
     return items.filter(item => new Date(item[dateField]) >= pastDate);
   };
 
-  const filteredOrders = filterByDate(orders);
-  const filteredCustomers = filterByDate(customers);
+  let filteredOrders = filterByDate(orders);
+  let filteredCustomers = filterByDate(customers);
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filteredOrders = filteredOrders.filter(o => o.id?.toLowerCase().includes(q) || o.profiles?.full_name?.toLowerCase().includes(q));
+    filteredCustomers = filteredCustomers.filter(c => c.user_metadata?.full_name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q));
+  }
 
   const totalRevenue = filteredOrders.reduce((sum, o) => {
     if (o.status !== 'Cancelled') return sum + Number(o.total_amount || 0);
@@ -705,6 +712,8 @@ const AdminDashboard = () => {
             <input 
               type="text" 
               placeholder="Search..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none' }}
             />
           </div>
@@ -1392,9 +1401,14 @@ const AdminDashboard = () => {
                 return a.localeCompare(b);
               });
               const dynamicCategories = ['All Teas', ...sortedCategories];
-              const filteredProducts = activeProductCategory === 'All Teas' 
+              let filteredProducts = activeProductCategory === 'All Teas' 
                 ? products 
                 : products.filter(p => (p.subcategory || 'Tea') === activeProductCategory);
+
+              if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filteredProducts = filteredProducts.filter(p => p?.name?.toLowerCase()?.includes(q) || p?.subcategory?.toLowerCase()?.includes(q));
+              }
 
               return (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

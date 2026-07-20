@@ -600,11 +600,21 @@ const AdminDashboard = () => {
 
   let filteredOrders = filterByDate(orders);
   let filteredCustomers = filterByDate(customers);
+  let filteredJournalPosts = journalPosts;
+  let filteredSupportTickets = supportTickets;
+  let filteredBookings = bookings;
+  let filteredCoupons = coupons;
+  let filteredLowStockProducts = products.filter(p => p.inStock === false || p.stock === 0);
 
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     filteredOrders = filteredOrders.filter(o => o.id?.toLowerCase().includes(q) || o.profiles?.full_name?.toLowerCase().includes(q));
     filteredCustomers = filteredCustomers.filter(c => c.user_metadata?.full_name?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q));
+    filteredJournalPosts = filteredJournalPosts.filter(j => j.title?.toLowerCase().includes(q) || j.slug?.toLowerCase().includes(q));
+    filteredSupportTickets = filteredSupportTickets.filter(t => t.id?.toLowerCase().includes(q) || t.profiles?.full_name?.toLowerCase().includes(q) || t.issue_type?.toLowerCase().includes(q));
+    filteredBookings = filteredBookings.filter(b => b.full_name?.toLowerCase().includes(q) || b.email?.toLowerCase().includes(q));
+    filteredCoupons = filteredCoupons.filter(c => c.code?.toLowerCase().includes(q));
+    filteredLowStockProducts = filteredLowStockProducts.filter(p => p.name?.toLowerCase().includes(q));
   }
 
   const totalRevenue = filteredOrders.reduce((sum, o) => {
@@ -613,7 +623,6 @@ const AdminDashboard = () => {
   }, 0);
   const activeOrdersCount = filteredOrders.filter(o => o.status !== 'Shipped' && o.status !== 'Cancelled').length;
   const totalCustomers = filteredCustomers.length;
-  const lowStockProducts = products.filter(p => p.inStock === false || p.stock === 0);
   const recentOrders = filteredOrders.slice(0, 5);
 
   return (
@@ -808,11 +817,11 @@ const AdminDashboard = () => {
                     <h3 style={{ marginBottom: '1rem', color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <AlertTriangle size={18} color="#ef4444" /> Low Stock Items
                     </h3>
-                    {lowStockProducts.length === 0 ? (
+                    {filteredLowStockProducts.length === 0 ? (
                       <p style={{ color: '#94a3b8' }}>All products are fully stocked.</p>
                     ) : (
                       <div className="low-stock-list">
-                        {lowStockProducts.map(p => (
+                        {filteredLowStockProducts.map(p => (
                           <div key={p._id} className="low-stock-item">
                             <img src={p.imageUrl} alt={p.name} style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }} />
                             <div style={{ flex: 1 }}>
@@ -894,10 +903,10 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {journalPosts.length === 0 ? (
+                      {filteredJournalPosts.length === 0 ? (
                         <tr><td colSpan="5" style={{ textAlign: 'center' }}>No journal posts found.</td></tr>
                       ) : (
-                        journalPosts.map(post => (
+                        filteredJournalPosts.map(post => (
                           <tr key={post._id} style={{ opacity: post.isHidden ? 0.5 : 1 }}>
                             {editingJournalId === post._id ? (
                               <td colSpan="6">
@@ -961,10 +970,10 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.length === 0 ? (
+                    {filteredOrders.length === 0 ? (
                       <tr><td colSpan="6" style={{ textAlign: 'center' }}>No orders found.</td></tr>
                     ) : (
-                      orders.map(order => (
+                      filteredOrders.map(order => (
                         <tr key={order.id}>
                           <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>{order.id.substring(0,8)}...</td>
                           <td>{order.profiles?.full_name || 'Guest'}</td>
@@ -1258,7 +1267,7 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {supportTickets.map(ticket => (
+                    {filteredSupportTickets.map(ticket => (
                       <React.Fragment key={ticket.id}>
                         <tr>
                           <td style={{ fontFamily: 'monospace' }}>{ticket.id.substring(0,8)}</td>
@@ -1307,7 +1316,7 @@ const AdminDashboard = () => {
                         </tr>
                       </React.Fragment>
                     ))}
-                    {supportTickets.length === 0 && (
+                    {filteredSupportTickets.length === 0 && (
                       <tr>
                         <td colSpan="6" style={{ textAlign: 'center', padding: '2rem', color: '#94a3b8' }}>No support tickets found</td>
                       </tr>
@@ -1332,10 +1341,10 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {bookings.length === 0 ? (
+                    {filteredBookings.length === 0 ? (
                       <tr><td colSpan="6" style={{ textAlign: 'center' }}>No booking requests found.</td></tr>
                     ) : (
-                      bookings.map(booking => (
+                      filteredBookings.map(booking => (
                         <tr key={booking.id}>
                           <td style={{ fontWeight: 'bold' }}>
                             {new Date(booking.date).toLocaleDateString()} <br/>
@@ -1527,10 +1536,10 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {customers.length === 0 ? (
+                    {filteredCustomers.length === 0 ? (
                       <tr><td colSpan="4" style={{ textAlign: 'center' }}>No customers found.</td></tr>
                     ) : (
-                      customers.map(customer => (
+                      filteredCustomers.map(customer => (
                         <tr key={customer.id}>
                           <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>{customer.id.substring(0,8)}...</td>
                           <td style={{ fontWeight: 'bold', color: '#fff' }}>{customer.user_metadata?.full_name || 'Anonymous User'}</td>
@@ -1632,10 +1641,10 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {coupons.length === 0 ? (
-                        <tr><td colSpan="6" style={{ textAlign: 'center' }}>No promo codes created yet.</td></tr>
+                      {filteredCoupons.length === 0 ? (
+                        <tr><td colSpan="6" style={{ textAlign: 'center' }}>No promo codes found.</td></tr>
                       ) : (
-                        coupons.map(coupon => (
+                        filteredCoupons.map(coupon => (
                           <tr key={coupon.id}>
                             <td style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#fff', letterSpacing: '1px' }}>{coupon.code}</td>
                             <td style={{ color: '#4ade80', fontWeight: 'bold' }}>

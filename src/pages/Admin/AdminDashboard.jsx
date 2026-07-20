@@ -777,7 +777,7 @@ const AdminDashboard = () => {
                     <div className="stat-icon alerts"><AlertTriangle size={24} /></div>
                     <div className="stat-content">
                       <p>Low Stock Alerts</p>
-                      <h3 style={{ color: lowStockProducts.length > 0 ? '#ef4444' : '#f8fafc' }}>{lowStockProducts.length}</h3>
+                      <h3 style={{ color: filteredLowStockProducts.length > 0 ? '#ef4444' : '#f8fafc' }}>{filteredLowStockProducts.length}</h3>
                     </div>
                   </div>
                 </div>

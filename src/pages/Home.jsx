@@ -10,10 +10,12 @@ import TastingCTA from '../components/TastingCTA/TastingCTA';
 import CafePreview from '../components/CafePreview/CafePreview';
 import Testimonials from '../components/Testimonials/Testimonials';
 import GalleryStrip from '../components/GalleryStrip/GalleryStrip';
+import SEO from '../components/SEO/SEO';
 
 export default function Home() {
   return (
     <PageTransition>
+      <SEO title="Danjo Teas | Premium Nilgiris Tea Experience" url="/" />
       <HeroRevamped />
       <Philosophy />
       <FounderStory />

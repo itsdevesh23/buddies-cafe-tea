@@ -8,6 +8,7 @@ import { useSettings } from '../../context/SettingsContext';
 import PageTransition from '../../components/PageTransition/PageTransition';
 import BrewingGuide from '../../components/BrewingGuide/BrewingGuide';
 import { client, urlFor } from '../../sanity';
+import SEO from '../../components/SEO/SEO';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
@@ -88,6 +89,12 @@ export default function ProductDetail() {
 
   return (
     <PageTransition>
+      <SEO 
+        title={`${product.name} | Danjo Teas`} 
+        description={product.description || `Buy ${product.name} at Danjo Teas.`} 
+        image={product.image}
+        url={`/product/${slug}`}
+      />
       <section className="pdp">
         {/* Breadcrumb */}
         <nav className="pdp__breadcrumb">

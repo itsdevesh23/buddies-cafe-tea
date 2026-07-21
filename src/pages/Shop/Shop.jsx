@@ -6,6 +6,7 @@ import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import PageTransition from '../../components/PageTransition/PageTransition';
 import { client, urlFor } from '../../sanity';
+import SEO from '../../components/SEO/SEO';
 import './Shop.css';
 
 const danjoCategories = [
@@ -111,6 +112,7 @@ export default function Shop() {
   if (loading) {
     return (
       <PageTransition>
+        <SEO title="Shop Premium Teas | Danjo Teas" url="/shop" />
         <div className="shop-page__loading" style={{ textAlign: 'center', padding: '4rem' }}>
           <div className="spinner"></div>
           <p>Curating teas...</p>
@@ -131,6 +133,7 @@ export default function Shop() {
 
   return (
     <PageTransition>
+      <SEO title="Shop Premium Teas | Danjo Teas" url="/shop" />
       <section className="shop-page">
         <div className="shop-page__header">
           <motion.h1

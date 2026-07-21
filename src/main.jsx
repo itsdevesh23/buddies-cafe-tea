@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import * as Sentry from "@sentry/react";
 import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
+import { HelmetProvider } from 'react-helmet-async'
 import './styles/main.css'
 import App from './App.jsx'
 
@@ -28,8 +29,10 @@ if (import.meta.env.VITE_POSTHOG_KEY) {
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <PostHogProvider client={posthog}>
-      <App />
-    </PostHogProvider>
+    <HelmetProvider>
+      <PostHogProvider client={posthog}>
+        <App />
+      </PostHogProvider>
+    </HelmetProvider>
   </StrictMode>,
 )

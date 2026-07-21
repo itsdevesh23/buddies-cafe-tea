@@ -2,11 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Leaf, Mountain, Droplets, Sun } from 'lucide-react';
 import PageTransition from '../../components/PageTransition/PageTransition';
+import SEO from '../../components/SEO/SEO';
 import './HeritagePage.css';
 
 const HeritagePage = () => {
   return (
     <PageTransition>
+      <SEO title="Our Heritage | The Danjo Teas Story" url="/heritage" />
       <div className="heritage-page">
         <section className="heritage-hero">
           <motion.div 

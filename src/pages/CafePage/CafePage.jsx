@@ -1,14 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Wifi, BookOpen, BatteryCharging, Mountain, Coffee, MapPin } from 'lucide-react';
+import { Wifi, BookOpen, BatteryCharging, Mountain, Coffee, MapPin, Clock, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PageTransition from '../../components/PageTransition/PageTransition';
+import SEO from '../../components/SEO/SEO';
 import buddiesLogo from '../../assets/BuddiesLogo.jpg';
 import './CafePage.css';
 
 const CafePage = () => {
   return (
     <PageTransition>
+      <SEO title="Buddies Cafe | Danjo Teas Experience" url="/cafe" />
       <div className="cafe-page">
         <section className="cafe-hero">
           <div className="cafe-hero__overlay"></div>

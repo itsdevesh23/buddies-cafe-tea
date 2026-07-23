@@ -15,7 +15,7 @@
     "@sentry/react": "^10.58.0",
     "@supabase/supabase-js": "^2.106.2",
     "framer-motion": "^12.40.0",
-    "lucide-react": "^1.17.0",
+    "lucide-react": "^1.21.0",
     "pg": "^8.21.0",
     "posthog-js": "^1.390.2",
     "react": "^19.2.6",

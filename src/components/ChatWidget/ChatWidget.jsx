@@ -11,7 +11,7 @@ const generateSessionId = () => {
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'ai', content: 'Namaste! Welcome to Buddies Cafe. I am your Virtual Tea Sommelier. How can I help you today?' }
+    { role: 'ai', content: 'Vanakkam! Welcome to Buddies Cafe. I am your Virtual Tea Sommelier. How can I help you today?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);

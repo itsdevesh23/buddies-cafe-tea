@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, User, Bot, Loader2, Sparkles } from 'lucide-react';
 import './ChatWidget.css';
@@ -121,7 +122,7 @@ const ChatWidget = () => {
                   className={`message-wrapper ${msg.role}`}
                 >
                   <div className="message-bubble">
-                    {msg.content}
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
                   </div>
                 </motion.div>
               ))}

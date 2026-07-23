@@ -1131,7 +1131,7 @@ app.post('/api/chat', aiLimiter, async (req, res) => {
     }
 
     const response = await fetch(webhookUrl, {
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(60000),
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

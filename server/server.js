@@ -145,9 +145,9 @@ const ticketLimiter = rateLimit({
 });
 
 const aiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // 10 chat requests per 15 mins per IP
-  message: { error: 'Too many AI chat requests. Please try again in 15 minutes.' },
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 20, // 20 chat requests per 10 mins per IP
+  message: { error: 'Too many AI chat requests. Please try again in 10 minutes.' },
   standardHeaders: true, legacyHeaders: false,
   handler: (req, res, next, options) => {
     Sentry.captureMessage(`AI Chat Rate Limit Exceeded: ${req.ip}`, { level: 'warning', tags: { route: req.path } });

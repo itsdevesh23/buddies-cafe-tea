@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { client } from '../sanity';
 
 const CartContext = createContext(null);
 
@@ -14,6 +15,61 @@ export function CartProvider({ children }) {
   useEffect(() => {
     localStorage.setItem('buddies_cart', JSON.stringify(items));
   }, [items]);
+
+  // Validate cart items against live database on mount
+  useEffect(() => {
+    if (items.length === 0) return;
+    
+    const productIds = [...new Set(items.map(item => item.originalId).filter(Boolean))];
+    
+    if (productIds.length > 0) {
+      client.fetch(`*[_type == "product" && _id in $ids]`, { ids: productIds })
+        .then(liveProducts => {
+          setItems(prevItems => {
+            let hasChanges = false;
+            
+            const updatedItems = prevItems.map(item => {
+              const liveProduct = liveProducts.find(p => p._id === item.originalId);
+              
+              // 1. Remove if deleted or out of stock
+              if (!liveProduct || liveProduct.inStock === false) {
+                 hasChanges = true;
+                 return null;
+              }
+              
+              // 2. Remove if weight is no longer available
+              const moq = liveProduct.moq || 250;
+              const cwStr = liveProduct.customBulkWeights || '50, 100, 150, 200, 250';
+              const cwList = cwStr.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
+              const availablePacks = moq > 20 ? cwList : [moq];
+              
+              if (!availablePacks.includes(item.packWeight)) {
+                 hasChanges = true;
+                 return null;
+              }
+              
+              // 3. Update price and name if changed
+              const newPrice = Math.round((liveProduct.price / moq) * item.packWeight);
+              const expectedName = `${liveProduct.name} (${item.packWeight >= 1000 ? item.packWeight/1000 + ' kg' : item.packWeight + ' gms'})`;
+              
+              if (item.price !== newPrice || item.name !== expectedName) {
+                 hasChanges = true;
+                 return { ...item, price: newPrice, name: expectedName };
+              }
+              
+              return item;
+            }).filter(Boolean); // Remove nulls
+            
+            if (hasChanges) {
+              return updatedItems;
+            }
+            return prevItems;
+          });
+        })
+        .catch(console.error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   const addToCart = useCallback((product) => {
     const qtyToAdd = product.quantity || 1;

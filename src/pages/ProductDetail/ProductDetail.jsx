@@ -33,7 +33,9 @@ export default function ProductDetail() {
           id: res._id,
           slug: res.slug?.current || res.slug
         });
-        setPackWeight(res.moq > 20 ? 50 : (res.moq || 1));
+        const cwStr = res.customBulkWeights || '50, 100, 150, 200, 250';
+        const cwList = cwStr.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
+        setPackWeight(res.moq > 20 ? (cwList[0] || 50) : (res.moq || 1));
         setQty(1);
         
         // Fetch related products

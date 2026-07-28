@@ -82,7 +82,7 @@ export default function ProductDetail() {
   const moq = product.moq || 250;
   const packPrice = Math.round((product.price / moq) * packWeight);
   
-  const customWeightsString = '50, 100, 150, 200, 250';
+  const customWeightsString = product.customBulkWeights || '50, 100, 150, 200, 250';
   const customWeights = customWeightsString.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
   
   const availablePacks = moq > 20 ? customWeights : [moq];

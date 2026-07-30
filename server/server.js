@@ -35,6 +35,9 @@ Sentry.init({
 const resend = new Resend(process.env.RESEND_API_KEY);
 const app = express();
 
+// Trust the reverse proxy (Render/Vercel) so rate limiters use the real client IP
+app.set('trust proxy', 1);
+
 // ==========================================
 // SECURITY MIDDLEWARE
 // ==========================================

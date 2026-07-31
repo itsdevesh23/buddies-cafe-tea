@@ -83,6 +83,7 @@ export default function ProductDetail() {
 
   const moq = product.moq || 250;
   const packPrice = Math.round((product.price / moq) * packWeight);
+  const packMrp = product.mrp ? Math.round((product.mrp / moq) * packWeight) : null;
   
   const customWeightsString = product.customBulkWeights || '50, 100, 150, 200, 250';
   const customWeights = customWeightsString.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
@@ -151,6 +152,11 @@ export default function ProductDetail() {
               <span>5.0 · 24 reviews</span>
             </div>
             <p className="pdp__price">
+              {packMrp > packPrice && (
+                <span style={{textDecoration: 'line-through', opacity: 0.6, fontSize: '1.2rem', marginRight: '10px', fontWeight: 'normal'}}>
+                  ₹{packMrp}
+                </span>
+              )}
               ₹{Math.round(packPrice)} <span style={{ fontSize: '1rem', color: '#94a3b8', fontWeight: 'normal' }}>(including GST)</span>
             </p>
             <p className="pdp__desc">{product.description}</p>

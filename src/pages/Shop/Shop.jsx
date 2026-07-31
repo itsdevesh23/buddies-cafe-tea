@@ -269,10 +269,18 @@ export default function Shop() {
                             const defaultWeight = moq > 20 ? 50 : moq;
                             const basePrice = product.price || 0;
                             const displayPrice = moq > 20 ? Math.round((basePrice / moq) * 50) : basePrice;
+                            const displayMrp = product.mrp ? (moq > 20 ? Math.round((product.mrp / moq) * 50) : product.mrp) : null;
 
                             return (
                               <>
-                                <span className="shop-card__price">₹{displayPrice} {moq > 20 && <span style={{fontSize: '0.65rem', opacity: 0.7}}>from 50g</span>}</span>
+                                <span className="shop-card__price">
+                                  {displayMrp > displayPrice && (
+                                    <span style={{textDecoration: 'line-through', opacity: 0.6, fontSize: '0.85rem', marginRight: '6px', fontWeight: 'normal'}}>
+                                      ₹{displayMrp}
+                                    </span>
+                                  )}
+                                  ₹{displayPrice} {moq > 20 && <span style={{fontSize: '0.65rem', opacity: 0.7}}>from 50g</span>}
+                                </span>
                                 {product.inStock === false ? (
                                   <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold', padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px' }}>
                                     OUT OF STOCK

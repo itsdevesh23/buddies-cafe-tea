@@ -24,6 +24,16 @@ body {
   line-height: 1.6;
 }
 
+/* Prevent image downloading and dragging */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   text-transform: uppercase;

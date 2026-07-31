@@ -203,7 +203,7 @@ export default function Shop() {
               All Teas
             </button>
             {dynamicCategories.map((cat) => {
-              const displayName = danjoCategories.includes(cat?.toUpperCase()) ? `Danjo - ${cat}` : cat;
+              const displayName = danjoCategories.includes(cat?.toUpperCase()) ? `DANJO - ${cat}` : cat;
               return (
                 <button
                   key={cat}

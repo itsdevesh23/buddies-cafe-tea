@@ -247,12 +247,18 @@ export default function Shop() {
                         {product.tags && product.tags[0] && (
                           <span className="shop-card__tag">{product.tags[0]}</span>
                         )}
-                        <div className="shop-card__icon" style={product.image ? { background: 'transparent', padding: 0 } : {}}>
+                        <div 
+                          className="shop-card__icon" 
+                          style={{ ...(product.image ? { background: 'transparent', padding: 0 } : {}), position: 'relative' }}
+                          onContextMenu={(e) => e.preventDefault()}
+                          onDragStart={(e) => e.preventDefault()}
+                        >
+                          <div style={{ position: 'absolute', inset: 0, zIndex: 10 }}></div>
                           {product.image ? (
                             <img 
                               src={urlFor(product.image).width(400).url()} 
                               alt={product.name}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px' }}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px', pointerEvents: 'none', userSelect: 'none' }}
                             />
                           ) : (
                             <span>{product.category === 'Kombucha' ? '🫧' : '🍵'}</span>

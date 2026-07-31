@@ -510,7 +510,14 @@ const CheckoutPage = () => {
                 <div key={index} className="order-item">
                   <div className="item-image">
                     {item.image ? (
-                      <img src={typeof item.image === 'string' ? item.image : urlFor(item.image).width(200).url()} alt={item.name} onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                      <img 
+                        src={typeof item.image === 'string' ? item.image : urlFor(item.image).width(200).url()} 
+                        alt={item.name} 
+                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px', pointerEvents: 'none', userSelect: 'none' }}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onDragStart={(e) => e.preventDefault()}
+                      />
                     ) : null}
                     <div className="image-placeholder" style={{ display: item.image ? 'none' : 'flex' }}></div>
                     <span className="item-quantity">{item.quantity}</span>

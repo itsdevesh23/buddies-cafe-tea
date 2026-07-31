@@ -120,14 +120,19 @@ export default function ProductDetail() {
           >
             <div
               className="pdp__image-block"
-              style={{ background: product.image ? 'transparent' : `linear-gradient(135deg, ${product.accentColor}22, ${product.accentColor}08)` }}
+              style={{ background: product.image ? 'transparent' : `linear-gradient(135deg, ${product.accentColor}22, ${product.accentColor}08)`, position: 'relative' }}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
             >
+              {/* Invisible overlay to block direct image interaction */}
+              <div style={{ position: 'absolute', inset: 0, zIndex: 10 }}></div>
+              
               {product.image ? (
                 <img 
                   src={urlFor(product.image).width(800).url()} 
                   alt={product.name} 
                   className="pdp__real-image" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '24px' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '24px', pointerEvents: 'none', userSelect: 'none' }}
                 />
               ) : (
                 <span className="pdp__image-emoji">{product.subcategory === 'Kombucha' ? '🫧' : '🍵'}</span>

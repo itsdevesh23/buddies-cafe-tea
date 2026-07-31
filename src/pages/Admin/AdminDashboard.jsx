@@ -45,6 +45,10 @@ const AdminDashboard = () => {
 
   // Journal State
   const [journalPosts, setJournalPosts] = useState([]);
+
+  useEffect(() => {
+    setSearchQuery('');
+  }, [activeTab]);
   const [newJournalTitle, setNewJournalTitle] = useState('');
   const [newJournalSlug, setNewJournalSlug] = useState('');
   const [newJournalExcerpt, setNewJournalExcerpt] = useState('');

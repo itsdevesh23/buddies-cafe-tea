@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Package, Heart, Settings, LogOut, ChevronRight, Truck, AlertCircle, X, Upload } from 'lucide-react';
+import { User, Package, Heart, Settings, LogOut, ChevronRight, Truck, AlertCircle, X, Upload, Eye, EyeOff } from 'lucide-react';
 import PageTransition from '../../components/PageTransition/PageTransition';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
@@ -18,13 +18,16 @@ const AccountPage = () => {
     resetPassword: () => {}
   };
   
+  // Auth Form State
   const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Delete Account State
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -280,7 +283,35 @@ const AccountPage = () => {
               {!isForgotPassword && (
                 <div className="form-group">
                   <label>Password</label>
-                  <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                  <div style={{ position: 'relative' }}>
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      value={password} 
+                      onChange={e => setPassword(e.target.value)} 
+                      required 
+                      style={{ width: '100%', paddingRight: '40px' }}
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        position: 'absolute',
+                        right: '12px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        background: 'none',
+                        border: 'none',
+                        color: '#94a3b8',
+                        cursor: 'pointer',
+                        padding: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
                 </div>
               )}
               

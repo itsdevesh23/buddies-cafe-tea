@@ -139,6 +139,7 @@ export default function Shop() {
       searchParams.set('category', cat);
     }
     setSearchParams(searchParams);
+    setSearch(''); // Clear text search when changing categories
   };
 
   return (

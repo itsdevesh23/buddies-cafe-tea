@@ -1427,7 +1427,10 @@ const AdminDashboard = () => {
                   {dynamicCategories.map(cat => (
                     <button
                       key={cat}
-                      onClick={() => setActiveProductCategory(cat)}
+                      onClick={() => {
+                        setActiveProductCategory(cat);
+                        setSearchQuery('');
+                      }}
                       style={{
                         padding: '0.4rem 1rem',
                         borderRadius: '50px',

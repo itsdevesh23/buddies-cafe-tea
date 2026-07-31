@@ -97,10 +97,20 @@ export default function Shop() {
       case 'price-high': result.sort((a, b) => b.price - a.price); break;
       case 'name': 
         result.sort((a, b) => {
-          const aIsDanjo = danjoCategories.includes(a.subcategory?.toUpperCase());
-          const bIsDanjo = danjoCategories.includes(b.subcategory?.toUpperCase());
-          if (aIsDanjo && !bIsDanjo) return -1;
-          if (!aIsDanjo && bIsDanjo) return 1;
+          const getGroup = (cat) => {
+            if (!cat) return 4;
+            const c = cat.toUpperCase();
+            if (['BLACK TEA', 'DARJEELING SPECIAL', 'FLAVOURED TEA', 'FRUIT BASED INFUSION', 'GREEN TEAS', 'HERBAL INFUSION', 'MILKED TEA', 'OOLONG TEA', 'WHITE TEA'].includes(c)) return 1;
+            if (['ESSENTIAL OILS', 'COFFEE', 'SPICES', 'KOMBUCHA'].includes(c)) return 2;
+            if (c.startsWith('BRAND') || c.startsWith('SMALL GROWERS') || c.startsWith('SILVERMIST')) return 3;
+            if (danjoCategories.includes(c)) return 2;
+            return 4;
+          };
+          
+          const groupA = getGroup(a.subcategory);
+          const groupB = getGroup(b.subcategory);
+          
+          if (groupA !== groupB) return groupA - groupB;
           return a.name.localeCompare(b.name);
         });
         break;

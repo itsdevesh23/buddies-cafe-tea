@@ -491,8 +491,15 @@ app.post('/api/shipping-rates', zone2Limiter, async (req, res) => {
     const data = await response.json();
 
     if (data.status === 200 && data.data && data.data.available_courier_companies.length > 0) {
-      // Find the cheapest courier
-      const couriers = data.data.available_courier_companies;
+      // Find the cheapest courier (Prioritize AIR delivery)
+      let couriers = data.data.available_courier_companies;
+      
+      // Filter for Air couriers (is_surface is false)
+      const airCouriers = couriers.filter(c => c.is_surface === false);
+      if (airCouriers.length > 0) {
+        couriers = airCouriers;
+      }
+
       const cheapest = couriers.reduce((prev, curr) => {
         return (prev.rate < curr.rate) ? prev : curr;
       });

@@ -155,18 +155,22 @@ const AdminDashboard = () => {
       if (!ordersError) setOrders(ordersData || []);
 
       // Fetch Customers securely from backend
-      const customersRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/admin/customers');
-      if (customersRes.ok) {
-        const customersData = await customersRes.json();
-        setCustomers(customersData.users || []);
-      }
+      try {
+        const customersRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/admin/customers');
+        if (customersRes.ok) {
+          const customersData = await customersRes.json();
+          setCustomers(customersData.users || []);
+        }
+      } catch (err) { console.error('Error fetching customers:', err); }
 
       // Fetch Support Tickets
-      const supportRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/support-tickets');
-      if (supportRes.ok) {
-        const supportData = await supportRes.json();
-        setSupportTickets(supportData || []);
-      }
+      try {
+        const supportRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/support-tickets');
+        if (supportRes.ok) {
+          const supportData = await supportRes.json();
+          setSupportTickets(supportData || []);
+        }
+      } catch (err) { console.error('Error fetching tickets:', err); }
 
       // Fetch Products from Sanity
       await fetchProducts();
@@ -175,11 +179,13 @@ const AdminDashboard = () => {
       await fetchJournalPosts();
 
       // Fetch Bookings securely from backend (bypasses RLS)
-      const bookingsRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/get-bookings');
-      if (bookingsRes.ok) {
-        const bookingsData = await bookingsRes.json();
-        setBookings(bookingsData.bookings || []);
-      }
+      try {
+        const bookingsRes = await fetchWithAuth((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/get-bookings');
+        if (bookingsRes.ok) {
+          const bookingsData = await bookingsRes.json();
+          setBookings(bookingsData.bookings || []);
+        }
+      } catch (err) { console.error('Error fetching bookings:', err); }
 
       // Fetch Coupons
       const { data: couponsData, error: couponsError } = await supabase

@@ -26,7 +26,7 @@ export default function ProductDetail() {
   
   useEffect(() => {
     setLoading(true);
-    client.fetch(`*[_type == "product" && slug.current == $slug][0]`, { slug }).then(res => {
+    client.fetch(`*[_type == "product" && (slug.current == $slug || _id == $slug)][0]`, { slug }).then(res => {
       if (res) {
         setSanityProduct({
           ...res,

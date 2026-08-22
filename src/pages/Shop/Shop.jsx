@@ -265,7 +265,7 @@ export default function Shop() {
                             <span>{product.category === 'Kombucha' ? '🫧' : '🍵'}</span>
                           )}
                         </div>
-                        <Link to={`/product/${product.slug}`} className="shop-card__info">
+                        <Link to={`/product/${product.slug || product._id || product.id}`} className="shop-card__info">
                           <span className="shop-card__category">{product.subcategory || 'Tea'}</span>
                           <h3 className="shop-card__name">{product.name}</h3>
                           <p className="shop-card__desc">{product.description}</p>

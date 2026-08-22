@@ -124,7 +124,7 @@ export default function FeaturedTeas() {
               </span>
 
               {/* Name */}
-              <Link to={`/product/${tea.slug}`} style={{textDecoration: 'none', color: 'inherit'}}>
+              <Link to={`/product/${tea.slug || tea._id || tea.id}`} style={{textDecoration: 'none', color: 'inherit'}}>
                 <h3 className="featured-teas__card-name">{tea.name}</h3>
               </Link>
 

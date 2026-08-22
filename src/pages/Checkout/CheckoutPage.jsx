@@ -239,12 +239,14 @@ const CheckoutPage = () => {
       });
 
       if (!result.ok) {
+        let errMsg = 'Server error occurred.';
         try {
           const errData = await result.json();
-          toast.error(errData.error || 'Server error occurred.');
+          errMsg = errData.error || errMsg;
         } catch(e) {
-          toast.error('Server error. Could not connect to backend.');
+          errMsg = 'Server error. Could not connect to backend.';
         }
+        toast.error(errMsg);
         setIsProcessing(false);
         return;
       }

@@ -791,25 +791,15 @@ const AdminDashboard = () => {
             {activeTab === 'settings' && 'Global Site Settings'}
           </h1>
           
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-            <div className="admin-glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <Search size={18} color="#94a3b8" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none' }}
-              />
-            </div>
-            <button 
-              onClick={() => { logout(); navigate('/'); }} 
-              className="admin-btn"
-              style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem' }}
-              title="Exit to Store"
-            >
-              <LogOut size={16} /> Exit
-            </button>
+          <div className="admin-glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <Search size={18} color="#94a3b8" />
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none' }}
+            />
           </div>
         </div>
 

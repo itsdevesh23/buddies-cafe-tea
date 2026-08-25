@@ -33,9 +33,11 @@ export default function ProductDetail() {
           id: res._id,
           slug: res.slug?.current || res.slug
         });
-        const cwStr = res.customBulkWeights || '50, 100, 150, 200, 250';
-        const cwList = cwStr.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
-        setPackWeight(res.moq > 20 ? (cwList[0] || 50) : (res.moq || 1));
+        const cwStr = res.customBulkWeights;
+        const cwList = cwStr 
+          ? cwStr.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w))
+          : (res.moq > 20 ? [50, 100, 150, 200, 250] : [res.moq || 1]);
+        setPackWeight(res.moq > 20 ? (cwList.length > 0 ? cwList[0] : 50) : (res.moq || 1));
         setQty(1);
         
         // Fetch related products
@@ -85,10 +87,12 @@ export default function ProductDetail() {
   const packPrice = Math.round((product.price / moq) * packWeight);
   const packMrp = product.mrp ? Math.round((product.mrp / moq) * packWeight) : null;
   
-  const customWeightsString = product.customBulkWeights || '50, 100, 150, 200, 250';
-  const customWeights = customWeightsString.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w));
+  const customWeightsString = product.customBulkWeights;
+  const customWeights = customWeightsString 
+    ? customWeightsString.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w))
+    : [50, 100, 150, 200, 250];
   
-  const availablePacks = moq > 20 ? customWeights : [moq];
+  const availablePacks = moq > 20 ? (customWeights.length > 0 ? customWeights : [50, 100, 150, 200, 250]) : [moq];
 
   return (
     <PageTransition>

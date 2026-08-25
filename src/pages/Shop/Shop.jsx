@@ -273,10 +273,26 @@ export default function Shop() {
                         <div className="shop-card__footer">
                           {(() => {
                             const moq = product.moq || 250;
-                            const defaultWeight = moq > 20 ? 50 : moq;
+                            const cwStr = product.customBulkWeights;
+                            const cwList = cwStr 
+                              ? cwStr.split(',').map(s => parseInt(s.trim())).filter(w => !isNaN(w))
+                              : (moq > 20 ? [50, 100, 150, 200, 250] : [moq]);
+                            
+                            const defaultWeight = moq > 20 
+                              ? (cwList.length > 0 ? cwList[0] : 50) 
+                              : (moq || 1);
+
                             const basePrice = product.price || 0;
-                            const displayPrice = moq > 20 ? Math.round((basePrice / moq) * 50) : basePrice;
-                            const displayMrp = product.mrp ? (moq > 20 ? Math.round((product.mrp / moq) * 50) : product.mrp) : null;
+                            const displayPrice = moq > 20 
+                              ? Math.round((basePrice / moq) * defaultWeight) 
+                              : basePrice;
+                            const displayMrp = product.mrp 
+                              ? (moq > 20 ? Math.round((product.mrp / moq) * defaultWeight) : product.mrp) 
+                              : null;
+
+                            const weightLabel = defaultWeight >= 1000 
+                              ? `${defaultWeight / 1000}kg` 
+                              : `${defaultWeight}g`;
 
                             return (
                               <>
@@ -286,7 +302,7 @@ export default function Shop() {
                                       ₹{displayMrp}
                                     </span>
                                   )}
-                                  ₹{displayPrice} {moq > 20 && <span style={{fontSize: '0.65rem', opacity: 0.7}}>from 50g</span>}
+                                  ₹{displayPrice} {moq > 20 && <span style={{fontSize: '0.65rem', opacity: 0.7}}>from {weightLabel}</span>}
                                 </span>
                                 {product.inStock === false ? (
                                   <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold', padding: '0.4rem 0.8rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px' }}>

@@ -25,6 +25,9 @@ const AdminDashboard = () => {
   
   const [activeTab, setActiveTab] = useState('overview');
   const [timeFilter, setTimeFilter] = useState('all');
+  const [customSingleDate, setCustomSingleDate] = useState(new Date().toISOString().split('T')[0]);
+  const [customStartDate, setCustomStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [customEndDate, setCustomEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [activeProductCategory, setActiveProductCategory] = useState('All Teas');
@@ -595,8 +598,51 @@ const AdminDashboard = () => {
     if (timeFilter === 'all') return items;
     
     const now = new Date();
-    let pastDate = new Date();
     
+    if (timeFilter === 'today') {
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+      return items.filter(item => {
+        const itemDate = new Date(item[dateField]);
+        return itemDate >= startOfDay && itemDate <= endOfDay;
+      });
+    }
+    
+    if (timeFilter === 'yesterday') {
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const startOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0);
+      const endOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59, 999);
+      return items.filter(item => {
+        const itemDate = new Date(item[dateField]);
+        return itemDate >= startOfYesterday && itemDate <= endOfYesterday;
+      });
+    }
+
+    if (timeFilter === 'single_date') {
+      if (!customSingleDate) return items;
+      const [year, month, day] = customSingleDate.split('-').map(Number);
+      const startOfDay = new Date(year, month - 1, day, 0, 0, 0);
+      const endOfDay = new Date(year, month - 1, day, 23, 59, 59, 999);
+      return items.filter(item => {
+        const itemDate = new Date(item[dateField]);
+        return itemDate >= startOfDay && itemDate <= endOfDay;
+      });
+    }
+
+    if (timeFilter === 'custom') {
+      const startDate = customStartDate ? new Date(customStartDate + 'T00:00:00') : null;
+      const endDate = customEndDate ? new Date(customEndDate + 'T23:59:59.999') : null;
+      
+      return items.filter(item => {
+        const itemDate = new Date(item[dateField]);
+        if (startDate && itemDate < startDate) return false;
+        if (endDate && itemDate > endDate) return false;
+        return true;
+      });
+    }
+
+    let pastDate = new Date();
     switch(timeFilter) {
       case '1w': pastDate.setDate(now.getDate() - 7); break;
       case '1m': pastDate.setMonth(now.getMonth() - 1); break;
@@ -747,19 +793,55 @@ const AdminDashboard = () => {
             {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div className="admin-overview-tab">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <h2 style={{ color: '#f8fafc', margin: 0, fontSize: '1.5rem' }}>Overview</h2>
-                  <select 
-                    value={timeFilter} 
-                    onChange={(e) => setTimeFilter(e.target.value)}
-                    className="admin-filter-select"
-                  >
-                    <option value="all">All Time</option>
-                    <option value="1w">Last 7 Days</option>
-                    <option value="1m">Last 30 Days</option>
-                    <option value="3m">Last 3 Months</option>
-                    <option value="1y">Last Year</option>
-                  </select>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <select 
+                      value={timeFilter} 
+                      onChange={(e) => setTimeFilter(e.target.value)}
+                      className="admin-filter-select"
+                    >
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="yesterday">Yesterday</option>
+                      <option value="1w">Last 7 Days</option>
+                      <option value="1m">Last 30 Days</option>
+                      <option value="3m">Last 3 Months</option>
+                      <option value="1y">Last Year</option>
+                      <option value="single_date">Specific Date 📅</option>
+                      <option value="custom">Custom Date Range 📆</option>
+                    </select>
+
+                    {timeFilter === 'single_date' && (
+                      <input 
+                        type="date" 
+                        value={customSingleDate} 
+                        onChange={(e) => setCustomSingleDate(e.target.value)}
+                        className="admin-filter-date-input"
+                        title="Select Specific Date"
+                      />
+                    )}
+
+                    {timeFilter === 'custom' && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <input 
+                          type="date" 
+                          value={customStartDate} 
+                          onChange={(e) => setCustomStartDate(e.target.value)}
+                          className="admin-filter-date-input"
+                          title="Start Date"
+                        />
+                        <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>to</span>
+                        <input 
+                          type="date" 
+                          value={customEndDate} 
+                          onChange={(e) => setCustomEndDate(e.target.value)}
+                          className="admin-filter-date-input"
+                          title="End Date"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="admin-stat-grid">
                   <div className="admin-stat-card">

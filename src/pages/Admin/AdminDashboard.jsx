@@ -81,6 +81,7 @@ const AdminDashboard = () => {
   const [editStock, setEditStock] = useState(true);
   const [editCustomWeights, setEditCustomWeights] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('all');
 
   // Security Check
   const isAuthorized = isAdmin;
@@ -654,8 +655,28 @@ const AdminDashboard = () => {
     return items.filter(item => new Date(item[dateField]) >= pastDate);
   };
 
-  let filteredOrders = filterByDate(orders);
-  let filteredCustomers = filterByDate(customers);
+  // 1. Overview Tab Metrics (Calculated using the Overview Date Filter)
+  const overviewOrders = filterByDate(orders);
+  const overviewCustomers = filterByDate(customers);
+  const totalRevenue = overviewOrders.reduce((sum, o) => {
+    if (o.status !== 'Cancelled') return sum + Number(o.total_amount || 0);
+    return sum;
+  }, 0);
+  const activeOrdersCount = overviewOrders.filter(o => o.status !== 'Shipped' && o.status !== 'Cancelled').length;
+  const totalCustomers = overviewCustomers.length;
+  const recentOrders = overviewOrders.slice(0, 5);
+
+  // 2. Tab Specific Listings (Independent from Overview Date Filter)
+  let displayOrders = orders;
+  if (orderStatusFilter !== 'all') {
+    if (orderStatusFilter === 'Processing') {
+      displayOrders = displayOrders.filter(o => o.status !== 'Shipped' && o.status !== 'Cancelled');
+    } else {
+      displayOrders = displayOrders.filter(o => o.status?.toLowerCase() === orderStatusFilter.toLowerCase());
+    }
+  }
+
+  let displayCustomers = customers;
   let filteredJournalPosts = journalPosts;
   let filteredSupportTickets = supportTickets;
   let filteredBookings = bookings;
@@ -666,22 +687,14 @@ const AdminDashboard = () => {
     const q = searchQuery.toLowerCase();
     const safeMatch = (val) => val ? String(val).toLowerCase().includes(q) : false;
     
-    filteredOrders = filteredOrders.filter(o => safeMatch(o.id) || safeMatch(o.profiles?.full_name));
-    filteredCustomers = filteredCustomers.filter(c => safeMatch(c.user_metadata?.full_name) || safeMatch(c.email));
+    displayOrders = displayOrders.filter(o => safeMatch(o.id) || safeMatch(o.profiles?.full_name) || safeMatch(o.shipping_info?.firstName) || safeMatch(o.shipping_info?.lastName) || safeMatch(o.status));
+    displayCustomers = displayCustomers.filter(c => safeMatch(c.user_metadata?.full_name) || safeMatch(c.email) || safeMatch(c.phone));
     filteredJournalPosts = filteredJournalPosts.filter(j => safeMatch(j.title) || safeMatch(j.slug));
     filteredSupportTickets = filteredSupportTickets.filter(t => safeMatch(t.id) || safeMatch(t.profiles?.full_name) || safeMatch(t.issue_type));
     filteredBookings = filteredBookings.filter(b => safeMatch(b.full_name) || safeMatch(b.email));
     filteredCoupons = filteredCoupons.filter(c => safeMatch(c.code));
     filteredLowStockProducts = filteredLowStockProducts.filter(p => safeMatch(p.name));
   }
-
-  const totalRevenue = filteredOrders.reduce((sum, o) => {
-    if (o.status !== 'Cancelled') return sum + Number(o.total_amount || 0);
-    return sum;
-  }, 0);
-  const activeOrdersCount = filteredOrders.filter(o => o.status !== 'Shipped' && o.status !== 'Cancelled').length;
-  const totalCustomers = filteredCustomers.length;
-  const recentOrders = filteredOrders.slice(0, 5);
 
   return (
     <div className="admin-dashboard">
@@ -1065,23 +1078,48 @@ const AdminDashboard = () => {
 
             {/* ORDERS TAB */}
             {activeTab === 'orders' && (
-              <div className="admin-glass-panel admin-table-container">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                      <th>Customer</th>
-                      <th>Amount</th>
-                      <th>Order Date</th>
-                      <th>Logistics Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredOrders.length === 0 ? (
-                      <tr><td colSpan="6" style={{ textAlign: 'center' }}>No orders found.</td></tr>
-                    ) : (
-                      filteredOrders.map(order => (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {[
+                    { id: 'all', label: `All Orders (${orders.length})` },
+                    { id: 'Processing', label: `Processing (${orders.filter(o => o.status !== 'Shipped' && o.status !== 'Cancelled').length})` },
+                    { id: 'Shipped', label: `Shipped (${orders.filter(o => o.status?.toLowerCase() === 'shipped').length})` },
+                    { id: 'Cancelled', label: `Cancelled (${orders.filter(o => o.status?.toLowerCase() === 'cancelled').length})` }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setOrderStatusFilter(tab.id)}
+                      className="admin-btn"
+                      style={{
+                        padding: '0.45rem 0.9rem',
+                        fontSize: '0.85rem',
+                        background: orderStatusFilter === tab.id ? 'rgba(74, 222, 128, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                        borderColor: orderStatusFilter === tab.id ? '#4ade80' : 'rgba(255, 255, 255, 0.1)',
+                        color: orderStatusFilter === tab.id ? '#4ade80' : '#94a3b8'
+                      }}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="admin-glass-panel admin-table-container">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Order Date</th>
+                        <th>Logistics Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {displayOrders.length === 0 ? (
+                        <tr><td colSpan="6" style={{ textAlign: 'center' }}>No orders found.</td></tr>
+                      ) : (
+                        displayOrders.map(order => (
                         <tr key={order.id}>
                           <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>{order.id.substring(0,8)}...</td>
                           <td>{order.profiles?.full_name || 'Guest'}</td>
@@ -1125,6 +1163,7 @@ const AdminDashboard = () => {
                   </tbody>
                 </table>
               </div>
+            </div>
             )}
 
             {/* ORDER DETAILS MODAL */}
@@ -1652,10 +1691,10 @@ const AdminDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredCustomers.length === 0 ? (
+                    {displayCustomers.length === 0 ? (
                       <tr><td colSpan="4" style={{ textAlign: 'center' }}>No customers found.</td></tr>
                     ) : (
-                      filteredCustomers.map(customer => (
+                      displayCustomers.map(customer => (
                         <tr key={customer.id}>
                           <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>{customer.id.substring(0,8)}...</td>
                           <td style={{ fontWeight: 'bold', color: '#fff' }}>{customer.user_metadata?.full_name || 'Anonymous User'}</td>

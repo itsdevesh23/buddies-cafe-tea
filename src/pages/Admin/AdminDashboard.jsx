@@ -689,75 +689,79 @@ const AdminDashboard = () => {
       <aside className="admin-sidebar">
         <h2>Command Center</h2>
         
-        <button 
-          className={`admin-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          <LayoutDashboard size={20} /> Overview
-        </button>
+        <div className="admin-sidebar-nav">
+          <button 
+            className={`admin-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('overview')}
+          >
+            <LayoutDashboard size={18} /> Overview
+          </button>
 
-        <button 
-          className={`admin-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
-          onClick={() => setActiveTab('orders')}
-        >
-          <Package size={20} /> Orders
-        </button>
-        
-        <button 
-          className={`admin-nav-item ${activeTab === 'products' ? 'active' : ''}`}
-          onClick={() => setActiveTab('products')}
-        >
-          <Coffee size={20} /> Products
-        </button>
-        
-        <button 
-          className={`admin-nav-item ${activeTab === 'customers' ? 'active' : ''}`}
-          onClick={() => setActiveTab('customers')}
-        >
-          <Users size={20} /> Customers
-        </button>
+          <button 
+            className={`admin-nav-item ${activeTab === 'orders' ? 'active' : ''}`}
+            onClick={() => setActiveTab('orders')}
+          >
+            <Package size={18} /> Orders
+          </button>
+          
+          <button 
+            className={`admin-nav-item ${activeTab === 'products' ? 'active' : ''}`}
+            onClick={() => setActiveTab('products')}
+          >
+            <Coffee size={18} /> Products
+          </button>
+          
+          <button 
+            className={`admin-nav-item ${activeTab === 'customers' ? 'active' : ''}`}
+            onClick={() => setActiveTab('customers')}
+          >
+            <Users size={18} /> Customers
+          </button>
 
-        <button 
-          className={`admin-nav-item ${activeTab === 'journal' ? 'active' : ''}`}
-          onClick={() => setActiveTab('journal')}
-        >
-          <BookOpen size={20} /> Journal
-        </button>
-        
-        <button 
-          className={`admin-nav-item ${activeTab === 'promo' ? 'active' : ''}`}
-          onClick={() => setActiveTab('promo')}
-        >
-          <Tag size={20} /> Promo Codes
-        </button>
-        
-        <button 
-          className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          <Settings size={20} /> Settings
-        </button>
+          <button 
+            className={`admin-nav-item ${activeTab === 'journal' ? 'active' : ''}`}
+            onClick={() => setActiveTab('journal')}
+          >
+            <BookOpen size={18} /> Journal
+          </button>
+          
+          <button 
+            className={`admin-nav-item ${activeTab === 'promo' ? 'active' : ''}`}
+            onClick={() => setActiveTab('promo')}
+          >
+            <Tag size={18} /> Promo Codes
+          </button>
+          
+          <button 
+            className={`admin-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            <Settings size={18} /> Settings
+          </button>
 
-        <button 
-          className={`admin-nav-item ${activeTab === 'bookings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('bookings')}
-        >
-          <Calendar size={20} /> Bookings
-        </button>
+          <button 
+            className={`admin-nav-item ${activeTab === 'bookings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('bookings')}
+          >
+            <Calendar size={18} /> Bookings
+          </button>
 
-        <button 
-          className={`admin-nav-item ${activeTab === 'support' ? 'active' : ''}`}
-          onClick={() => setActiveTab('support')}
-        >
-          <LifeBuoy size={20} /> Support Tickets
-        </button>
+          <button 
+            className={`admin-nav-item ${activeTab === 'support' ? 'active' : ''}`}
+            onClick={() => setActiveTab('support')}
+          >
+            <LifeBuoy size={18} /> Support Tickets
+          </button>
+        </div>
 
-        <button 
-          className="admin-nav-item logout"
-          onClick={() => { logout(); navigate('/'); }}
-        >
-          <LogOut size={20} /> Exit Admin
-        </button>
+        <div className="admin-sidebar-footer">
+          <button 
+            className="admin-nav-item logout"
+            onClick={() => { logout(); navigate('/'); }}
+          >
+            <LogOut size={18} /> Exit Admin
+          </button>
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -774,15 +778,25 @@ const AdminDashboard = () => {
             {activeTab === 'settings' && 'Global Site Settings'}
           </h1>
           
-          <div className="admin-glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <Search size={18} color="#94a3b8" />
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none' }}
-            />
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+            <div className="admin-glass-panel" style={{ padding: '0.5rem 1rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <Search size={18} color="#94a3b8" />
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ background: 'transparent', border: 'none', color: '#fff', outline: 'none' }}
+              />
+            </div>
+            <button 
+              onClick={() => { logout(); navigate('/'); }} 
+              className="admin-btn"
+              style={{ background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.6rem 1rem' }}
+              title="Exit to Store"
+            >
+              <LogOut size={16} /> Exit
+            </button>
           </div>
         </div>
 

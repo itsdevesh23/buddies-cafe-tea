@@ -1058,7 +1058,7 @@ const AdminDashboard = () => {
                       <th>Order ID</th>
                       <th>Customer</th>
                       <th>Amount</th>
-                      <th>Payment</th>
+                      <th>Order Date</th>
                       <th>Logistics Status</th>
                       <th>Actions</th>
                     </tr>
@@ -1072,10 +1072,15 @@ const AdminDashboard = () => {
                           <td style={{ fontFamily: 'monospace', color: '#94a3b8' }}>{order.id.substring(0,8)}...</td>
                           <td>{order.profiles?.full_name || 'Guest'}</td>
                           <td style={{ fontWeight: 'bold' }}>₹{order.total_amount}</td>
-                          <td>
-                            <span className={`status-badge ${order.payment_status === 'paid' ? 'shipped' : 'processing'}`}>
-                              {order.payment_status?.toUpperCase() || 'PENDING'}
-                            </span>
+                          <td style={{ fontSize: '0.85rem', color: '#cbd5e1', whiteSpace: 'nowrap' }}>
+                            {order.created_at ? (
+                              <>
+                                <div style={{ fontWeight: '500' }}>{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                                  {new Date(order.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+                                </div>
+                              </>
+                            ) : 'N/A'}
                           </td>
                           <td>
                             <span className={`status-badge ${order.status?.toLowerCase() === 'shipped' ? 'delivered' : 'processing'}`}>

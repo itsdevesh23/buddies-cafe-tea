@@ -655,6 +655,7 @@ app.post('/api/place-order', zone1Limiter, async (req, res) => {
         if (orderData.shippingInfo.email) {
           resend.emails.send({
             from: 'Buddies Cafe <orders@danjoteas.com>', 
+            reply_to: 'buddiescafecbe@gmail.com',
             to: orderData.shippingInfo.email,
             subject: `Order Confirmation #${orderData.orderId}`,
             html: generateCustomerReceipt(orderData)
@@ -814,6 +815,7 @@ app.post('/api/place-cod-order', zone1Limiter, optionalAuth, async (req, res) =>
         if (orderData.shippingInfo.email) {
           resend.emails.send({
             from: 'Buddies Cafe <orders@danjoteas.com>', 
+            reply_to: 'buddiescafecbe@gmail.com',
             to: orderData.shippingInfo.email,
             subject: `Order Confirmation #${orderData.orderId}`,
             html: generateCustomerReceipt(orderData)
@@ -903,6 +905,7 @@ app.post('/api/cancel-order', zone1Limiter, requireAdmin, async (req, res) => {
     if (process.env.RESEND_API_KEY && orderData.shippingInfo && orderData.shippingInfo.email) {
       resend.emails.send({
         from: 'Buddies Cafe <orders@danjoteas.com>',
+        reply_to: 'buddiescafecbe@gmail.com',
         to: orderData.shippingInfo.email,
         subject: `Order Cancelled #${orderData.orderId}`,
         html: generateOrderCancellationEmail(orderData)

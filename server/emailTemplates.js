@@ -69,7 +69,7 @@ export const generateCustomerReceipt = (orderData) => {
           ${orderData.shippingInfo.city}, ${orderData.shippingInfo.state} - ${orderData.shippingInfo.pinCode}
         </p>
         
-        <p>If you have any questions, reply to this email or contact us at <a href="mailto:support@buddiescafe.com">support@buddiescafe.com</a>.</p>
+        <p>If you have any questions, reply to this email or contact us at <a href="mailto:buddiescafecbe@gmail.com">buddiescafecbe@gmail.com</a> or <a href="tel:+918220804250">+91 82208 04250</a>.</p>
         <p>Cheers,<br>The Buddies Cafe Team</p>
       </div>
     </div>
@@ -190,7 +190,7 @@ export const generateBookingConfirmedEmail = (bookingData) => {
           <p><strong>Guests:</strong> ${bookingData.guests} People</p>
         </div>
         
-        <p>If you need to make any changes to your reservation, please reply to this email or call us.</p>
+        <p>If you need to make any changes to your reservation, please reply to this email, email us at <a href="mailto:buddiescafecbe@gmail.com">buddiescafecbe@gmail.com</a>, or call us at <a href="tel:+918220804250">+91 82208 04250</a>.</p>
         <p>See you soon,<br><strong>The Buddies Cafe Team</strong></p>
       </div>
     </div>
@@ -210,7 +210,7 @@ export const generateBookingCancelledEmail = (bookingData) => {
         
         <p>We are likely fully booked during that time or hosting a private event. We would love to host you on another day, so please feel free to make a new request on our website!</p>
         
-        <p>If you have any questions, reply to this email or contact us directly.</p>
+        <p>If you have any questions, reply to this email or contact us at <a href="mailto:buddiescafecbe@gmail.com">buddiescafecbe@gmail.com</a> / <a href="tel:+918220804250">+91 82208 04250</a>.</p>
         <p>Warm regards,<br><strong>The Buddies Cafe Team</strong></p>
       </div>
     </div>
@@ -255,7 +255,7 @@ export const generateOrderCancellationEmail = (orderData) => {
           </tfoot>
         </table>
         
-        <p>We apologize for any inconvenience this may have caused. If you have any questions or concerns, please reply to this email or contact us at <a href="mailto:support@buddiescafe.com">support@buddiescafe.com</a>.</p>
+        <p>We apologize for any inconvenience this may have caused. If you have any questions or concerns, please reply to this email or contact us at <a href="mailto:buddiescafecbe@gmail.com">buddiescafecbe@gmail.com</a> or <a href="tel:+918220804250">+91 82208 04250</a>.</p>
         <p>Warm regards,<br><strong>The Buddies Cafe Team</strong></p>
       </div>
     </div>

@@ -72,7 +72,7 @@ const ContactPage = () => {
                 <Phone className="contact__icon" />
                 <div>
                   <h3>Call Us</h3>
-                  <p>+91 98765 43210</p>
+                  <p><a href="tel:+918220804250" style={{color: 'inherit', textDecoration: 'none'}}>+91 82208 04250</a></p>
                 </div>
               </div>
 
@@ -80,7 +80,7 @@ const ContactPage = () => {
                 <Mail className="contact__icon" />
                 <div>
                   <h3>Email Us</h3>
-                  <p>hello@buddiescafe.in</p>
+                  <p><a href="mailto:buddiescafecbe@gmail.com" style={{color: 'inherit', textDecoration: 'none'}}>buddiescafecbe@gmail.com</a></p>
                 </div>
               </div>
 
@@ -88,12 +88,12 @@ const ContactPage = () => {
                 <Clock className="contact__icon" />
                 <div>
                   <h3>Opening Hours</h3>
-                  <p>Open Daily<br/>8:00 AM - 9:00 PM</p>
+                  <p>Open Daily<br/>11:00 AM - 9:00 PM</p>
                 </div>
               </div>
             </div>
 
-            <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer" className="contact__whatsapp-btn btn-primary">
+            <a href="https://wa.me/918220804250" target="_blank" rel="noreferrer" className="contact__whatsapp-btn btn-primary">
               <MessageCircle size={20} />
               Chat on WhatsApp
             </a>

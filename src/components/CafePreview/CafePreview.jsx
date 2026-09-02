@@ -114,7 +114,7 @@ const CafePreview = () => {
             </a>
             <div className="cafe__location-row" style={{marginTop: '10px'}}>
               <Clock size={15} />
-              <span>Open Daily 8:00 AM – 9:00 PM</span>
+              <span>Open Daily 11:00 AM – 9:00 PM</span>
             </div>
           </motion.div>
 

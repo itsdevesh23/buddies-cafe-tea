@@ -94,7 +94,7 @@ const CafePage = () => {
                 <a href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '8px'}}><MapPin size={20} style={{verticalAlign: 'middle', marginRight: '8px'}} /> Buddies Cafe, Pudumund</a>
                 <a href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '8px'}}><MapPin size={20} style={{verticalAlign: 'middle', marginRight: '8px'}} /> Commercial Road, Ooty</a>
                 <a href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '16px'}}><MapPin size={20} style={{verticalAlign: 'middle', marginRight: '8px'}} /> Coonoor Branch</a>
-                <p>Open Daily: 10:00 AM - 8:00 PM</p>
+                <p>Open Daily: 11:00 AM - 9:00 PM</p>
                 <Link to="/booking" className="btn-primary reserve-btn">
                   Reserve a Table
                 </Link>

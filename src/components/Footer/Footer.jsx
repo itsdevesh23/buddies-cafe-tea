@@ -37,8 +37,8 @@ const Footer = () => {
   const [email, setEmail] = useState('');
   const { settings } = useSettings() || { settings: null };
 
-  const storeEmail = settings?.store_email || 'hello@buddiescafe.com';
-  const storePhone = settings?.store_phone || '+91 98765 43210';
+  const storeEmail = settings?.store_email || 'buddiescafecbe@gmail.com';
+  const storePhone = settings?.store_phone || '+91 82208 04250';
 
   const location = useLocation();
   const isHome = location.pathname === '/';
@@ -226,10 +226,16 @@ const Footer = () => {
               <ArrowRight size={18} />
             </button>
           </form>
-          <div className="footer__whatsapp">
+          <a 
+            href="https://wa.me/918220804250" 
+            target="_blank" 
+            rel="noreferrer" 
+            className="footer__whatsapp" 
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             <MessageCircle size={16} />
             <span>Chat with us on WhatsApp</span>
-          </div>
+          </a>
         </div>
       </div>
 

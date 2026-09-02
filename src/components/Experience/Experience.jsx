@@ -47,11 +47,11 @@ export default function Experience() {
             </div>
             <div className="experience__detail">
               <Clock size={18} className="experience__detail-icon" />
-              <span>Open Daily · 8:00 AM – 9:00 PM</span>
+              <span>Open Daily · 11:00 AM – 9:00 PM</span>
             </div>
             <div className="experience__detail">
               <Phone size={18} className="experience__detail-icon" />
-              <span>+91 98765 43210</span>
+              <span>+91 82208 04250</span>
             </div>
           </div>
 
@@ -66,7 +66,7 @@ export default function Experience() {
               Reserve a Table
             </motion.a>
             <motion.a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/918220804250"
               className="experience__whatsapp-btn"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}

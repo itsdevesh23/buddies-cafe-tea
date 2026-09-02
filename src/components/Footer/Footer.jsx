@@ -97,72 +97,75 @@ const Footer = () => {
             A mountain sanctuary for tea lovers. Premium Nilgiris teas, artisanal
             kombucha, and a world-class café experience in Ooty.
           </p>
-          <div className="footer__socials">
+          {/* Instagram Handles */}
+          <div className="footer__section-label">Follow Us on Instagram</div>
+          <div className="footer__pill-group">
             <a
               href="https://www.instagram.com/buddiescafetea?igsh=M3NqMno5dzJ1azF4"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer__social-link"
-              aria-label="Buddies Cafe Instagram"
-              title="Buddies Cafe Instagram"
+              className="footer__pill-link"
+              title="Buddies Cafe on Instagram"
             >
-              <FaInstagram size={18} />
+              <FaInstagram size={14} />
+              <span>@buddiescafetea</span>
             </a>
             <a
               href="https://www.instagram.com/danjoteas?igsh=MXFnc2g4NGNoZ29sZg=="
               target="_blank"
               rel="noopener noreferrer"
-              className="footer__social-link"
-              aria-label="Danjo Teas Instagram"
-              title="Danjo Teas Instagram"
+              className="footer__pill-link"
+              title="Danjo Teas on Instagram"
             >
-              <FaInstagram size={18} />
-            </a>
-            <a
-              href={`mailto:${storeEmail}`}
-              className="footer__social-link"
-              aria-label="Email"
-            >
-              <Mail size={18} />
-            </a>
-            <a
-              href={`tel:${storePhone.replace(/\s+/g, '')}`}
-              className="footer__social-link"
-              aria-label="Phone"
-            >
-              <Phone size={18} />
+              <FaInstagram size={14} />
+              <span>@danjoteas</span>
             </a>
           </div>
-          <div className="footer__socials" style={{marginTop: '15px'}}>
+
+          {/* Store Locations */}
+          <div className="footer__section-label" style={{ marginTop: '16px' }}>Our Café Locations</div>
+          <div className="footer__locations-list">
             <a
               href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer__social-link"
-              aria-label="Location Pudumund"
-              title="Buddies Cafe, Pudumund"
+              className="footer__location-link"
+              title="Buddies Cafe, Pudumund in Google Maps"
             >
-              <MapPin size={18} />
+              <MapPin size={13} className="footer__loc-icon" />
+              <span>Pudumund, Ooty</span>
             </a>
             <a
               href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer__social-link"
-              aria-label="Location Commercial Road"
-              title="Commercial Road, Ooty"
+              className="footer__location-link"
+              title="Commercial Road, Ooty in Google Maps"
             >
-              <MapPin size={18} />
+              <MapPin size={13} className="footer__loc-icon" />
+              <span>Commercial Road, Ooty</span>
             </a>
             <a
               href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer__social-link"
-              aria-label="Location Coonoor"
-              title="Coonoor Branch"
+              className="footer__location-link"
+              title="Coonoor Branch in Google Maps"
             >
-              <MapPin size={18} />
+              <MapPin size={13} className="footer__loc-icon" />
+              <span>Coonoor Branch</span>
+            </a>
+          </div>
+
+          {/* Direct Contact */}
+          <div className="footer__contact-strip" style={{ marginTop: '14px' }}>
+            <a href={`mailto:${storeEmail}`} className="footer__contact-item" title={`Email: ${storeEmail}`}>
+              <Mail size={13} />
+              <span>{storeEmail}</span>
+            </a>
+            <a href={`tel:${storePhone.replace(/\s+/g, '')}`} className="footer__contact-item" title={`Call: ${storePhone}`}>
+              <Phone size={13} />
+              <span>{storePhone}</span>
             </a>
           </div>
         </div>

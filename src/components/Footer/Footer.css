@@ -161,28 +161,97 @@
   margin: 0 0 20px 0;
 }
 
-.footer__socials {
-  display: flex;
-  gap: 12px;
+.footer__section-label {
+  font-family: var(--font-heading, 'Oswald', sans-serif);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--color-accent-matcha, #7C9A5E);
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
-.footer__social-link {
+.footer__pill-group {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.footer__pill-link {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  border: 1px solid rgba(245, 245, 220, 0.1);
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: var(--color-text-cream, #F5F5DC);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(245, 245, 220, 0.12);
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.footer__pill-link:hover {
+  background: rgba(124, 154, 94, 0.15);
+  border-color: var(--color-accent-matcha, #7C9A5E);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.footer__locations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer__location-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+  color: var(--color-text-muted, #A0AFA6);
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  width: fit-content;
+}
+
+.footer__loc-icon {
+  color: var(--color-accent-matcha, #7C9A5E);
+  flex-shrink: 0;
+}
+
+.footer__location-link:hover {
+  border-color: var(--color-accent-matcha, #7C9A5E);
+  color: var(--color-text-cream, #F5F5DC);
+  background: rgba(124, 154, 94, 0.1);
+  transform: translateX(3px);
+}
+
+.footer__contact-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.footer__contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
   color: var(--color-text-muted, #A0AFA6);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.2s ease;
 }
 
-.footer__social-link:hover {
-  border-color: var(--color-accent-matcha, #7C9A5E);
+.footer__contact-item:hover {
   color: var(--color-accent-matcha, #7C9A5E);
-  background: rgba(124, 154, 94, 0.1);
 }
 
 /* ── Link Columns ── */

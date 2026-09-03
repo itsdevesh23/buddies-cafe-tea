@@ -133,25 +133,39 @@ const AccountPage = () => {
   
   const handleAuth = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setStatusMessage('');
-    if (isForgotPassword) {
-      const result = await resetPassword(email);
-      setStatusMessage(result.message);
-      return;
-    }
-    
-    if (isLogin) {
-      const result = await login(email, password);
-      if (result && !result.success) {
+    setIsSubmitting(true);
+
+    try {
+      if (isForgotPassword) {
+        const result = await resetPassword(email);
         setStatusMessage(result.message);
+        return;
       }
-    } else {
-      const result = await signup(name, email, password, phone);
-      if (result && !result.success) {
-        setStatusMessage(result.message);
-      } else if (result && result.success) {
-        setStatusMessage(result.message + " If you don't see the dashboard, please check your email to verify your account.");
+      
+      if (isLogin) {
+        const result = await login(email, password);
+        if (result && !result.success) {
+          setStatusMessage(result.message);
+        }
+      } else {
+        const result = await signup(name, email, password, phone);
+        if (result && !result.success) {
+          setStatusMessage(result.message);
+        } else if (result && result.success) {
+          // Immediately log the customer in so they enter the account dashboard directly!
+          const loginResult = await login(email, password);
+          if (loginResult && !loginResult.success) {
+            setStatusMessage('Account created! Please sign in with your password.');
+          }
+        }
       }
+    } catch (err) {
+      console.error('Auth error:', err);
+      setStatusMessage('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -327,8 +341,22 @@ const AccountPage = () => {
                 </a>
               )}
               
-              <button type="submit" className="btn-primary auth-submit">
-                {isForgotPassword ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Sign Up'}
+              <button 
+                type="submit" 
+                className="btn-primary auth-submit"
+                disabled={isSubmitting}
+                style={{ 
+                  opacity: isSubmitting ? 0.7 : 1, 
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                {isSubmitting 
+                  ? 'Please wait...' 
+                  : (isForgotPassword ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Create Account')}
               </button>
             </form>
           </div>

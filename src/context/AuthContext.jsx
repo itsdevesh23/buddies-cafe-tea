@@ -50,8 +50,29 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return { success: false, message: error.message };
+    let { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      if (error.message && error.message.toLowerCase().includes('email not confirmed')) {
+        try {
+          const autoConfirmRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/auth/auto-confirm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+          const autoConfirmData = await autoConfirmRes.json();
+          if (autoConfirmData.success) {
+            const retry = await supabase.auth.signInWithPassword({ email, password });
+            if (!retry.error) {
+              return { success: true, message: 'Welcome back!' };
+            }
+            error = retry.error;
+          }
+        } catch (confirmErr) {
+          console.error("Auto-confirm fallback error:", confirmErr);
+        }
+      }
+      return { success: false, message: error.message };
+    }
     return { success: true, message: 'Welcome back!' };
   };
 

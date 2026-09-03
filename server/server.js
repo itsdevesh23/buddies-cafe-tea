@@ -115,9 +115,9 @@ const zone4Limiter = rateLimit({
 
 // --- STRICT ABUSE LIMITERS ---
 const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 3, // 3 requests per hour per IP
-  message: { error: 'Too many registration attempts from this IP, please try again after an hour' },
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 50, // 50 requests per 15 minutes per IP (supports multiple family devices & retries)
+  message: { error: 'Too many registration attempts from this network, please try again in a few minutes.' },
   standardHeaders: true, legacyHeaders: false,
   handler: (req, res, next, options) => {
     Sentry.captureMessage(`Auth Rate Limit Exceeded: ${req.ip}`, { level: 'warning', tags: { route: req.path } });
@@ -1201,8 +1201,9 @@ app.get('/api/admin/customers', requireAdmin, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+// --- AUTHENTICATION (AUTO-CONFIRM & BYPASS SUPABASE LIMITS) ---
+const registrationCooldown = new Map();
 
-// --- AUTHENTICATION (BYPASS SUPABASE LIMITS) ---
 app.post('/api/auth/register', authLimiter, validate(registerSchema), async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -1211,57 +1212,103 @@ app.post('/api/auth/register', authLimiter, validate(registerSchema), async (req
       return res.status(400).json({ error: 'Name, email, and password are required' });
     }
 
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Debounce duplicate clicks within 8 seconds
+    const lastAttempt = registrationCooldown.get(cleanEmail);
+    if (lastAttempt && (Date.now() - lastAttempt < 8000)) {
+      return res.json({ success: true, message: 'Account created successfully! Welcome to Buddies Cafe.' });
+    }
+    registrationCooldown.set(cleanEmail, Date.now());
+
     const supabaseAdmin = createClient(
       process.env.VITE_SUPABASE_URL,
       process.env.SUPABASE_SERVICE_ROLE_KEY
     );
 
-    // 1. Generate a signup verification link without sending an email via Supabase
-    const { data, error } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'signup',
-      email,
+    // 1. Create user in Supabase with auto-confirmed email (zero friction, immediate login)
+    const { data: userData, error: createError } = await supabaseAdmin.auth.admin.createUser({
+      email: cleanEmail,
       password,
-      data: { full_name: name, phone }
+      email_confirm: true,
+      user_metadata: { full_name: name, phone }
     });
 
-    if (error) {
-      if (error.status === 422 && error.message.includes('already registered')) {
-         return res.status(400).json({ error: 'User already registered' });
+    if (createError) {
+      const errMsg = createError.message?.toLowerCase() || '';
+      if (createError.status === 422 || errMsg.includes('already registered') || errMsg.includes('already been registered')) {
+        // If user already exists, ensure their email is confirmed
+        try {
+          const { data: userList } = await supabaseAdmin.auth.admin.listUsers();
+          const existing = (userList?.users || []).find(u => u.email?.toLowerCase() === cleanEmail);
+          if (existing && !existing.email_confirmed_at) {
+            await supabaseAdmin.auth.admin.updateUserById(existing.id, { email_confirm: true });
+            return res.json({ success: true, message: 'Account verified successfully! Please log in.' });
+          }
+        } catch (confirmErr) {
+          console.error('Error auto-confirming existing user:', confirmErr);
+        }
+        return res.status(400).json({ error: 'An account with this email already exists. Please log in.' });
       }
-      throw error;
+      throw createError;
     }
 
-    const verificationLink = data.properties.action_link;
-
-    // 2. Send the custom email using Resend
-    const resendResponse = await resend.emails.send({
-      from: 'Buddies Cafe <orders@danjoteas.com>',
-      to: email,
-      subject: 'Verify your Buddies Cafe Account',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #2e4a3b;">Welcome to Buddies Cafe! ☕</h2>
-          <p>Hi ${name},</p>
-          <p>Thanks for joining us! Please verify your email address to activate your account and start exploring our curated tea collection.</p>
-          <a href="${verificationLink}" style="display: inline-block; padding: 12px 24px; background-color: #4ade80; color: #0f172a; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0;">
-            Verify Email Address
-          </a>
-          <p style="color: #666; font-size: 0.9em;">If the button above doesn't work, paste this link into your browser:</p>
-          <p style="word-break: break-all; color: #666; font-size: 0.8em;">${verificationLink}</p>
-        </div>
-      `
-    });
-
-    if (resendResponse.error) {
-      // If Resend fails (e.g., free tier limitation), we should delete the user to allow retrying later.
-      await supabaseAdmin.auth.admin.deleteUser(data.user.id);
-      throw new Error(resendResponse.error.message);
+    // 2. Send Welcome Email via Resend
+    if (process.env.RESEND_API_KEY) {
+      resend.emails.send({
+        from: 'Buddies Cafe <orders@danjoteas.com>',
+        reply_to: 'buddiescafecbe@gmail.com',
+        to: cleanEmail,
+        subject: 'Welcome to Buddies Cafe! ☕',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff; color: #1e293b;">
+            <h2 style="color: #2e4a3b; margin-top: 0;">Welcome to Buddies Cafe & Danjo Teas! 🌿</h2>
+            <p>Hi ${name},</p>
+            <p>Your account is all set! You are now ready to explore our handpicked Nilgiris teas, artisanal kombucha, and exclusive reserve tastings.</p>
+            <div style="text-align: center; margin: 28px 0;">
+              <a href="https://danjoteas.com/shop" style="display: inline-block; padding: 14px 28px; background-color: #2e4a3b; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 15px;">
+                Explore Tea Collection
+              </a>
+            </div>
+            <p style="color: #64748b; font-size: 0.9em; margin-top: 24px; line-height: 1.5;">
+              If you have any questions, feel free to reply to this email, write to <a href="mailto:buddiescafecbe@gmail.com" style="color: #2e4a3b;">buddiescafecbe@gmail.com</a>, or call <a href="tel:+918220804250" style="color: #2e4a3b;">+91 82208 04250</a>.
+            </p>
+          </div>
+        `
+      }).catch(e => console.error('Welcome Email Error:', e));
     }
 
-    res.json({ success: true, message: 'Account created! Please check your email for the verification link.' });
+    res.json({ success: true, message: 'Account created successfully! Welcome to Buddies Cafe.' });
   } catch (error) {
     console.error('Auth Register Error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Auto-confirm fallback endpoint (if an unconfirmed user attempts to login)
+app.post('/api/auth/auto-confirm', authLimiter, async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    const cleanEmail = email.trim().toLowerCase();
+    const supabaseAdmin = createClient(
+      process.env.VITE_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    );
+
+    const { data: userList, error: listErr } = await supabaseAdmin.auth.admin.listUsers();
+    if (listErr) throw listErr;
+
+    const user = (userList?.users || []).find(u => u.email?.toLowerCase() === cleanEmail);
+    if (user && !user.email_confirmed_at) {
+      await supabaseAdmin.auth.admin.updateUserById(user.id, { email_confirm: true });
+      return res.json({ success: true, message: 'Account verified successfully' });
+    }
+    return res.json({ success: true, message: 'Account already verified' });
+  } catch (err) {
+    console.error('Auto Confirm Error:', err);
+    return res.status(500).json({ error: err.message });
   }
 });
 

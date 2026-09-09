@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { CreditCard, Truck, MapPin, ChevronLeft, QrCode, Tag } from 'lucide-react';
+import { CreditCard, Truck, MapPin, ChevronLeft, QrCode, Tag, AlertCircle } from 'lucide-react';
 import PageTransition from '../../components/PageTransition/PageTransition';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -54,6 +54,7 @@ const CheckoutPage = () => {
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('online');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
   const [pinCode, setPinCode] = useState('');
   const [shippingCost, setShippingCost] = useState(0);
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
@@ -130,6 +131,7 @@ const CheckoutPage = () => {
   const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
 
   const handlePlaceOrder = async () => {
+    setPaymentError(null);
     setIsProcessing(true);
     
     // Gather Shipping Info from inputs
@@ -260,12 +262,18 @@ const CheckoutPage = () => {
         currency: 'INR',
         name: 'Buddies Cafe',
         description: 'Premium Tea Order',
-        image: "/assets/hero_4k.png",
+        image: typeof window !== 'undefined' ? `${window.location.origin}/assets/hero_4k.png` : '/assets/hero_4k.png',
         order_id: orderData.razorpayOrderId,
+        modal: {
+          ondismiss: function () {
+            // When user closes Razorpay modal or clicks back, unfreeze the checkout button
+            setIsProcessing(false);
+          }
+        },
         handler: async function (response) {
           // Success Callback
           try {
-            // Call our new backend to verify payment and mark the Pending order as Paid
+            // Call our backend to verify payment and mark the Pending order as Paid
             const finalizeRes = await fetch((import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/place-order', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -309,7 +317,9 @@ const CheckoutPage = () => {
       const rzp1 = new window.Razorpay(options);
       
       rzp1.on('payment.failed', function (response){
-        toast.error("Payment Failed. Reason: " + response.error.description);
+        const reason = response.error?.description || 'Payment was unsuccessful or timed out. Please try again.';
+        toast.error("Payment Failed: " + reason);
+        setPaymentError(`${reason} (No money was deducted from your account. You can tap "Place Order" to retry or try another payment method.)`);
         setIsProcessing(false);
       });
 
@@ -488,7 +498,27 @@ const CheckoutPage = () => {
                       </div>
                     </label>
                   </div>
-                  <div className="form-actions space-between">
+
+                  {paymentError && (
+                    <div style={{
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      borderRadius: '8px',
+                      padding: '12px 16px',
+                      marginTop: '1.5rem',
+                      color: '#f87171',
+                      fontSize: '0.88rem',
+                      lineHeight: '1.5',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      gap: '10px'
+                    }}>
+                      <AlertCircle size={20} style={{ flexShrink: 0, marginTop: '2px', color: '#ef4444' }} />
+                      <span>{paymentError}</span>
+                    </div>
+                  )}
+
+                  <div className="form-actions space-between" style={{ marginTop: paymentError ? '1.2rem' : '2rem' }}>
                     <button className="btn-secondary" onClick={prevStep} disabled={isProcessing}>
                       <ChevronLeft size={16} /> Back
                     </button>

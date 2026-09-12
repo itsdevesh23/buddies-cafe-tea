@@ -64,7 +64,8 @@ const ContactPage = () => {
                   <h3>Visit Us</h3>
                   <a href="https://maps.app.goo.gl/MRVrPEtBnoNxGMJ39" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '4px'}}>Buddies Cafe, Pudumund</a>
                   <a href="https://maps.app.goo.gl/asTAExdsJ7cWboBD7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '4px'}}>Commercial Road, Ooty</a>
-                  <a href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block'}}>Coonoor Branch</a>
+                  <a href="https://maps.app.goo.gl/BG6HAjUA81hPz8SX7" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block', marginBottom: '4px'}}>Coonoor Branch</a>
+                  <a href="https://share.google/4200SXJpMNDnAVmmG" target="_blank" rel="noreferrer" style={{color: 'inherit', display: 'block'}}>Kotagiri Branch</a>
                 </div>
               </div>
 

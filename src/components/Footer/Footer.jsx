@@ -155,6 +155,16 @@ const Footer = () => {
               <MapPin size={13} className="footer__loc-icon" />
               <span>Coonoor Branch</span>
             </a>
+            <a
+              href="https://share.google/4200SXJpMNDnAVmmG"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer__location-link"
+              title="Buddies Cafe - Kotagiri in Google Maps"
+            >
+              <MapPin size={13} className="footer__loc-icon" />
+              <span>Kotagiri Branch</span>
+            </a>
           </div>
 
           {/* Direct Contact */}

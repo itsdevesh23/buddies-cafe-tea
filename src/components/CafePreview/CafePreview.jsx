@@ -112,6 +112,10 @@ const CafePreview = () => {
               <MapPin size={15} />
               <span>Coonoor Branch</span>
             </a>
+            <a href="https://share.google/4200SXJpMNDnAVmmG" target="_blank" rel="noreferrer" className="cafe__location-row" style={{color: 'inherit', textDecoration: 'none'}}>
+              <MapPin size={15} />
+              <span>Kotagiri Branch</span>
+            </a>
             <div className="cafe__location-row" style={{marginTop: '10px'}}>
               <Clock size={15} />
               <span>Open Daily 11:00 AM – 9:00 PM</span>

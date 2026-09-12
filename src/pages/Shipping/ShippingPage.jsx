@@ -30,12 +30,11 @@ const ShippingPage = () => {
               </div>
               <h2>Shipping Information</h2>
               <div className="policy-content">
-                <p>We take pride in delivering our premium teas and kombucha with the utmost care, ensuring they reach you fresh and intact.</p>
+                <p>We take pride in delivering our premium teas with the utmost care, ensuring they reach you fresh and intact.</p>
                 <ul>
-                  <li><strong>South India:</strong> Delivery within 2-3 business days.</li>
-                  <li><strong>Pan India:</strong> Delivery within 4-6 business days.</li>
-                  <li><strong>Free Shipping:</strong> Available on all orders over ₹999.</li>
-                  <li><strong>Kombucha Shipping:</strong> Packed with cold packs to maintain freshness. Must be refrigerated upon arrival.</li>
+                  <li><strong>South India:</strong> Delivery within 3-5 working days.</li>
+                  <li><strong>Pan India:</strong> Delivery within 8-10 working days.</li>
+                  <li><strong>Free Shipping:</strong> Available on all orders over ₹15,000.</li>
                 </ul>
               </div>
             </motion.section>

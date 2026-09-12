@@ -79,7 +79,7 @@ const CheckoutPage = () => {
   
   const subtotal = displayCart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const calculatedDiscount = discount || 0;
-  const isFreeShipping = couponDetails?.type === 'free_shipping';
+  const isFreeShipping = couponDetails?.type === 'free_shipping' || ((subtotal - calculatedDiscount) >= 15000);
   const effectiveShipping = isFreeShipping ? 0 : shippingCost;
   const total = subtotal - calculatedDiscount + effectiveShipping;
 

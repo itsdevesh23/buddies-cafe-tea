@@ -352,8 +352,8 @@ app.post('/api/create-order', zone1Limiter, validate(orderSchema), optionalAuth,
     let finalTotal = calculatedSubtotal - discount;
     let finalShippingCost = 0;
 
-    if (finalTotal >= 4999) {
-      finalShippingCost = 0; // Free shipping over 4999
+    if (finalTotal >= 15000) {
+      finalShippingCost = 0; // Free shipping over 15000
     } else if (shippingCost !== undefined && shippingCost !== null && shippingCost >= 0) {
       finalShippingCost = Number(shippingCost);
     } else {

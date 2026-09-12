@@ -11,8 +11,8 @@ export default function ShippingPolicy() {
 
       <div className="policy-content">
         <h2>General Shipping Information</h2>
-        <p>All Orders above Rs 4999/- shall be eligible for Free Delivery within India (select pin codes and billing value/subtotal order value after discount).</p>
-        <p>Orders received before 12:00 AM IST (Indian Standard Time) usually ship out the same business day. Orders received after this time generally leave the next business day. We deliver within 3 – 7 working days. Please note that our International delivery partner, INDIA POST, DHL/FedEx do not deliver orders on weekends.</p>
+        <p>All orders above Rs 15,000/- shall be eligible for Free Delivery within India (select pin codes and billing value/subtotal order value after discount).</p>
+        <p>Orders received before 12:00 AM IST (Indian Standard Time) usually ship out the same business day. Orders received after this time generally leave the next business day. Delivery takes within 3 – 5 working days in South India and 8 – 10 working days Pan India. Please note that our delivery partners do not deliver orders on weekends.</p>
 
         <h2>Important Notice (Octroi, Local Inward Taxes and Levies etc.)</h2>
         <p>In certain states/cities/zones, local authorities, state or municipal agencies may levy an additional amount as entry fee. We at DANJOTEAS.com work in a way that the clearance with different authorities and govt. agencies is smooth to ensure that the package reaches you as quickly as possible, but in these specific cases, the additional charge will have to be borne the customer.</p>

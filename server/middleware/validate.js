@@ -32,7 +32,7 @@ export const bookingSchema = z.object({
     phone: z.string().min(5, "Phone number is too short").max(25),
     date: z.string().min(1, "Date is required").max(50),
     time: z.string().min(1, "Time is required").max(50),
-    guests: z.number().int().min(1).max(50),
+    guests: z.coerce.number().int().min(1, "Number of guests must be at least 1").max(50, "Number of guests cannot exceed 50"),
     special_requests: z.string().max(2000).optional().nullable().or(z.literal("")),
     experience_type: z.string().optional()
   }).passthrough()
@@ -59,7 +59,7 @@ export const orderSchema = z.object({
     }).passthrough(),
     couponCode: z.string().max(50).optional().nullable().or(z.literal("")),
     paymentMethod: z.string().optional(),
-    shippingCost: z.number().optional().nullable(),
+    shippingCost: z.coerce.number().optional().nullable(),
     userId: z.string().optional().nullable()
   }).passthrough()
 });
@@ -70,11 +70,12 @@ export const orderSchema = z.object({
 
 export const validate = (schema) => async (req, res, next) => {
   try {
-    await schema.parseAsync({
+    const parsed = await schema.parseAsync({
       body: req.body,
       query: req.query,
       params: req.params,
     });
+    if (parsed.body) req.body = parsed.body;
     return next();
   } catch (error) {
     if (error instanceof z.ZodError || error.issues) {

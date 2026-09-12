@@ -16,7 +16,7 @@ const BookingPage = () => {
 
     const formData = {
       experience_type: e.target.experienceType.value,
-      guests: e.target.guests.value,
+      guests: parseInt(e.target.guests.value, 10) || 1,
       date: e.target.date.value,
       time: e.target.time.value,
       full_name: e.target.name.value,

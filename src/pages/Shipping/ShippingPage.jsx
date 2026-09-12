@@ -53,7 +53,6 @@ const ShippingPage = () => {
                 <p>We want you to love your Buddies Cafe experience. If you are not completely satisfied with your purchase, we're here to help.</p>
                 <ul>
                   <li><strong>7 Days Return:</strong> We accept returns within 7 days of delivery for sealed, unopened teas.</li>
-                  <li><strong>Kombucha Returns:</strong> Due to its perishable nature, kombucha cannot be returned. If damaged in transit, please contact us immediately with photos for a replacement.</li>
                   <li><strong>Refund Process:</strong> Refunds will be processed to the original method of payment within 5-7 business days of receiving the returned item.</li>
                 </ul>
               </div>
